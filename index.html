@@ -36,6 +36,13 @@
         height: 60px;
       }
 
+      /* Tambahkan ini untuk memperbesar font judul */
+      .header h2 {
+        font-size: 32px; /* Bisa diubah sesuai keinginan */
+        font-weight: bold;
+        margin: 0;
+      }
+
       .info {
         border-top: 1px solid #ddd;
         margin-top: 10px;
@@ -50,6 +57,8 @@
       .status {
         font-weight: bold;
       }
+
+      
     </style>
   </head>
 
@@ -57,19 +66,25 @@
     <div class="status-card">
       <div class="header">
         <img src="logo1.png" />
-        <h2>Status Keanggotaan</h2>
+        <h2>Status Keanggotaan Pagar Nusa</h2>
       </div>
 
       <div class="info" id="info-box">
         <p><b>Status:</b> <span id="status">...</span></p>
         <p><b>Nama:</b> <span id="nama">...</span></p>
         <p><b>NIA:</b> <span id="nia">...</span></p>
+        <p>
+          <b>Jabatan:</b>
+          <span id="jabatan"
+            >Anggota - pimpinan cabang kabupaten kediri</span
+          >
+        </p>
       </div>
     </div>
 
     <script>
       const params = new URLSearchParams(window.location.search);
-      const id = params.get("id");
+      const id = params.get("id") || "101"; // default jika tidak ada ID
 
       if (!id) {
         document.getElementById("info-box").innerHTML =
