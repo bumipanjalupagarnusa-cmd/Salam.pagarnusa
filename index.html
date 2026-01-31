@@ -1,126 +1,3947 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="id">
   <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Status Keanggotaan Pagar Nusa</title>
-
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Pendaftaran KTA & Sertifikat Digital - Pagar Nusa</title>
     <style>
-      body {
-        font-family: "Calibri", sans-serif;
-        background-color: #f5f5f5;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        min-height: 100vh;
+      /* Reset CSS */
+      * {
         margin: 0;
-        padding: 20px;
+        padding: 0;
+        box-sizing: border-box;
       }
 
-      .status-card {
-        background-color: #fff;
-        width: 400px;
-        border-radius: 12px;
-        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-        padding: 20px;
+      body {
+        font-family: "Inter", Arial, sans-serif;
+        background: linear-gradient(135deg, #f6f8fb 0%, #e9f0f7 100%);
+        color: #333;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        overflow-x: hidden;
       }
 
-      .header {
+      /* Splash Screen */
+      #splash {
+        background: linear-gradient(135deg, #14213b 0%, #0d3b66 100%);
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
         display: flex;
         align-items: center;
-        gap: 15px;
+        justify-content: center;
+        flex-direction: column;
+        z-index: 9999;
+        transition: opacity 0.8s ease;
       }
 
-      .header img {
+      .splash-content {
+        text-align: center;
+        position: relative;
+      }
+
+      .splash-logo {
+        width: 180px;
+        height: 180px;
+        margin-bottom: 30px;
+        object-fit: contain;
+        animation:
+          float 3s ease-in-out infinite,
+          pulse 2s infinite ease-in-out;
+      }
+
+      @keyframes float {
+        0% {
+          transform: translateY(0px);
+        }
+        50% {
+          transform: translateY(-10px);
+        }
+        100% {
+          transform: translateY(0px);
+        }
+      }
+
+      @keyframes pulse {
+        0% {
+          transform: scale(1);
+          opacity: 1;
+        }
+        50% {
+          transform: scale(1.05);
+          opacity: 0.9;
+        }
+        100% {
+          transform: scale(1);
+          opacity: 1;
+        }
+      }
+
+      .splash-title {
+        color: white;
+        font-size: 2.5rem;
+        font-weight: 700;
+        margin-bottom: 15px;
+        text-shadow: 0 2px 10px rgba(10, 239, 255, 0.3);
+        animation: fadeInDown 1s ease;
+      }
+
+      .splash-subtitle {
+        color: #e0e0e0;
+        font-size: 1.2rem;
+        font-weight: 500;
+        margin-bottom: 40px;
+        animation: fadeInUp 1s ease 0.2s both;
+      }
+
+      .loading-text {
+        color: #00e5ff;
+        font-size: 1.5rem;
+        font-weight: 600;
+        font-family: Arial, sans-serif;
+        letter-spacing: 2px;
+        animation: fadeIn 1s ease 0.4s both;
+      }
+
+      .loading-dots {
+        display: inline-block;
+        position: relative;
+        width: 80px;
+        height: 20px;
+      }
+
+      .loading-dots::after {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, #ffffff, transparent);
+        animation: loadingDots 1.5s infinite;
+      }
+
+      @keyframes loadingDots {
+        0% {
+          transform: translateX(-100%);
+        }
+        100% {
+          transform: translateX(100%);
+        }
+      }
+
+      @keyframes fadeInDown {
+        from {
+          opacity: 0;
+          transform: translateY(-30px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      @keyframes fadeInUp {
+        from {
+          opacity: 0;
+          transform: translateY(30px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      /* Header */
+      header {
+        background: linear-gradient(90deg, #0d3b66, #1f7a8c);
+        color: white;
+        padding: 15px 20px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        position: sticky;
+        top: 0;
+        z-index: 1000;
+        animation: slideDown 0.5s ease;
+      }
+
+      @keyframes slideDown {
+        from {
+          transform: translateY(-100%);
+        }
+        to {
+          transform: translateY(0);
+        }
+      }
+
+      .header-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .brand {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+
+      .brand .logo {
+        width: 50px;
+        height: 50px;
+        object-fit: contain;
+        animation: rotateIn 0.8s ease;
+      }
+
+      @keyframes rotateIn {
+        from {
+          transform: rotate(-10deg);
+          opacity: 0;
+        }
+        to {
+          transform: rotate(0);
+          opacity: 1;
+        }
+      }
+
+      .brand-text {
+        display: flex;
+        flex-direction: column;
+      }
+
+      .brand-title {
+        font-weight: 700;
+        font-size: 18px;
+      }
+
+      .brand-subtitle {
+        font-size: 14px;
+        color: #c0c0c0;
+      }
+
+      /* Home Button */
+      .home-button {
+        background: rgba(255, 255, 255, 0.2);
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        color: white;
+        padding: 8px 16px;
+        border-radius: 30px;
+        cursor: pointer;
+        font-size: 14px;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .home-button::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: rgba(255, 255, 255, 0.2);
+        transition: left 0.5s ease;
+      }
+
+      .home-button:hover::before {
+        left: 0;
+      }
+
+      .home-button:hover {
+        background: rgba(255, 255, 255, 0.3);
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+      }
+
+      .home-button-icon {
+        width: 18px;
+        height: 18px;
+      }
+
+      /* Main Content */
+      main {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 40px 20px;
+      }
+
+      /* Home Section */
+      #homeSection {
+        text-align: center;
+        max-width: 800px;
+        margin: 0 auto;
+        animation: fadeIn 0.8s ease;
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .home-logo {
+        margin-bottom: 30px;
+      }
+
+      .home-logo img {
+        width: 150px;
+        height: 150px;
+        object-fit: contain;
+        animation: bounceIn 1s ease;
+      }
+
+      @keyframes bounceIn {
+        0% {
+          transform: scale(0.3);
+          opacity: 0;
+        }
+        50% {
+          transform: scale(1.05);
+        }
+        70% {
+          transform: scale(0.9);
+        }
+        100% {
+          transform: scale(1);
+          opacity: 1;
+        }
+      }
+
+      .home-title {
+        font-size: 2.5rem;
+        font-weight: 800;
+        color: #0d3b66;
+        margin-bottom: 15px;
+        line-height: 1.2;
+        position: relative;
+        display: inline-block;
+      }
+
+      .home-title::after {
+        content: "";
+        position: absolute;
+        bottom: -5px;
+        left: 0;
+        width: 0;
+        height: 3px;
+        background: linear-gradient(90deg, #0d3b66, #1f7a8c);
+        animation: expandWidth 1.5s ease forwards;
+      }
+
+      @keyframes expandWidth {
+        to {
+          width: 100%;
+        }
+      }
+
+      .home-subtitle {
+        font-size: 1.8rem;
+        font-weight: 700;
+        color: #1f7a8c;
+        margin-bottom: 30px;
+        animation: fadeIn 1s ease 0.3s both;
+      }
+
+      .home-description {
+        font-size: 1.1rem;
+        color: #555;
+        margin-bottom: 40px;
+        max-width: 600px;
+        margin-left: auto;
+        margin-right: auto;
+        animation: fadeIn 1s ease 0.5s both;
+      }
+
+      .cta-container {
+        display: flex;
+        gap: 20px;
+        justify-content: center;
+        flex-wrap: wrap;
+        animation: fadeIn 1s ease 0.7s both;
+      }
+
+      .cta-button {
+        background: linear-gradient(90deg, #0d3b66, #1f7a8c);
+        color: white;
+        border: none;
+        padding: 15px 40px;
+        font-size: 1.2rem;
+        font-weight: 700;
+        border-radius: 50px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 15px rgba(13, 59, 102, 0.3);
+        position: relative;
+        overflow: hidden;
+      }
+
+      .cta-button::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(
+          90deg,
+          transparent,
+          rgba(255, 255, 255, 0.2),
+          transparent
+        );
+        transition: left 0.5s ease;
+      }
+
+      .cta-button:hover::before {
+        left: 100%;
+      }
+
+      .cta-button:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 6px 20px rgba(13, 59, 102, 0.4);
+      }
+
+      .cta-button-secondary {
+        background: linear-gradient(90deg, #1f7a8c, #0d3b66);
+      }
+
+      /* Form Section */
+      #formSection,
+      #certificateFormSection {
+        display: none;
+        width: 100%;
+        max-width: 800px;
+        margin: 0 auto;
+        animation: fadeIn 0.5s ease;
+      }
+
+      .form-container {
+        background: white;
+        border-radius: 15px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        overflow: hidden;
+        animation: slideUp 0.5s ease;
+      }
+
+      @keyframes slideUp {
+        from {
+          opacity: 0;
+          transform: translateY(30px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .form-header {
+        background: linear-gradient(90deg, #0d3b66, #1f7a8c);
+        color: white;
+        padding: 20px;
+        text-align: center;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .form-header::before {
+        content: "";
+        position: absolute;
+        top: -50%;
+        left: -50%;
+        width: 200%;
+        height: 200%;
+        background: radial-gradient(
+          circle,
+          rgba(255, 255, 255, 0.1) 0%,
+          transparent 70%
+        );
+        animation: rotate 20s linear infinite;
+      }
+
+      @keyframes rotate {
+        from {
+          transform: rotate(0deg);
+        }
+        to {
+          transform: rotate(360deg);
+        }
+      }
+
+      .form-header h2 {
+        font-size: 1.8rem;
+        margin-bottom: 5px;
+        position: relative;
+        z-index: 1;
+      }
+
+      .form-header p {
+        font-size: 1rem;
+        opacity: 0.9;
+        position: relative;
+        z-index: 1;
+      }
+
+      /* Steps Indicator - Improved Design */
+      .steps {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 30px 20px;
+        background: #f8f9fa;
+        border-bottom: 1px solid #e9ecef;
+        position: relative;
+      }
+
+      .steps-container {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        width: 100%;
+        max-width: 600px;
+        position: relative;
+      }
+
+      .step {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        position: relative;
+        z-index: 2;
+        flex: 1;
+        /* Nonaktifkan klik pada indikator langkah */
+        pointer-events: none;
+      }
+
+      .step-circle {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        background: #e9ecef;
+        color: #6c757d;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold;
+        font-size: 1.2rem;
+        margin-bottom: 12px;
+        transition: all 0.4s ease;
+        border: 3px solid #e9ecef;
+        position: relative;
+      }
+
+      .step.active .step-circle {
+        background: #0d3b66;
+        color: white;
+        border-color: #0d3b66;
+        box-shadow: 0 0 0 8px rgba(13, 59, 102, 0.1);
+        transform: scale(1.1);
+        animation: pulse 2s infinite;
+      }
+
+      .step.completed .step-circle {
+        background: #28a745;
+        color: white;
+        border-color: #28a745;
+      }
+
+      .step:last-child .step-line {
+        display: none;
+      }
+
+      .step.completed .step-line {
+        background: #28a745;
+      }
+
+      .step-text {
+        font-size: 0.85rem;
+        color: #6c757d;
+        font-weight: 600;
+        text-align: center;
+        margin-top: 5px;
+        transition: all 0.3s ease;
+      }
+
+      .step.active .step-text {
+        color: #0d3b66;
+        font-weight: 700;
+        transform: translateY(-2px);
+      }
+
+      .step.completed .step-text {
+        color: #28a745;
+      }
+
+      /* Form Content */
+      .form-content {
+        padding: 30px;
+      }
+
+      .step-content {
+        display: none;
+      }
+
+      .step-content.active {
+        display: block;
+        animation: fadeIn 0.5s ease;
+      }
+
+      .form-group {
+        margin-bottom: 20px;
+        animation: slideInLeft 0.5s ease;
+      }
+
+      @keyframes slideInLeft {
+        from {
+          opacity: 0;
+          transform: translateX(-20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateX(0);
+        }
+      }
+
+      .form-group label {
+        display: block;
+        margin-bottom: 8px;
+        font-weight: 600;
+        font-size: 0.95rem;
+        color: #333;
+      }
+
+      .form-group label span {
+        color: #dc3545;
+      }
+
+      .form-control {
+        width: 100%;
+        padding: 12px 15px;
+        border: 1px solid #ced4da;
+        border-radius: 8px;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+        /* Otomatis kapital */
+        text-transform: uppercase;
+      }
+
+      /* Khusus untuk email agar tidak kapital */
+      #email {
+        text-transform: none;
+      }
+
+      .form-control:focus {
+        border-color: #0d3b66;
+        outline: none;
+        box-shadow: 0 0 0 3px rgba(13, 59, 102, 0.1);
+        transform: translateY(-2px);
+      }
+
+      .form-control.error {
+        border-color: #dc3545;
+        animation: shake 0.5s;
+      }
+
+      @keyframes shake {
+        0%,
+        100% {
+          transform: translateX(0);
+        }
+        10%,
+        30%,
+        50%,
+        70%,
+        90% {
+          transform: translateX(-5px);
+        }
+        20%,
+        40%,
+        60%,
+        80% {
+          transform: translateX(5px);
+        }
+      }
+
+      .form-text {
+        font-size: 0.85rem;
+        color: #6c757d;
+        margin-top: 5px;
+      }
+
+      .error-message {
+        color: #dc3545;
+        font-size: 0.85rem;
+        margin-top: 5px;
+        display: none;
+        animation: fadeIn 0.3s ease;
+      }
+
+      /* Radio Options */
+      .radio-group {
+        margin-top: 10px;
+      }
+
+      .radio-option {
+        display: flex;
+        align-items: center;
+        margin-bottom: 10px;
+        transition: transform 0.2s ease;
+      }
+
+      .radio-option:hover {
+        transform: translateX(5px);
+      }
+
+      .radio-option input[type="radio"] {
+        margin-right: 10px;
+        width: 18px;
+        height: 18px;
+      }
+
+      /* Checkbox Options */
+      .checkbox-group {
+        margin: 20px 0;
+      }
+
+      .checkbox-item {
+        display: flex;
+        align-items: center;
+        margin-bottom: 15px;
+        cursor: pointer;
+        transition: transform 0.2s ease;
+      }
+
+      .checkbox-item:hover {
+        transform: translateX(5px);
+      }
+
+      .checkbox-item input[type="checkbox"] {
+        margin-right: 10px;
+        width: 18px;
+        height: 18px;
+      }
+
+      .institution-fields {
+        background: #f8f9fa;
+        border-radius: 8px;
+        padding: 15px;
+        margin-top: 10px;
+        display: none;
+        animation: slideDown 0.3s ease;
+      }
+
+      .institution-fields.show {
+        display: block;
+      }
+
+      /* File Upload */
+      .file-upload {
+        position: relative;
+        display: inline-block;
+        cursor: pointer;
+        width: 100%;
+      }
+
+      .file-upload input[type="file"] {
+        position: absolute;
+        opacity: 0;
+        width: 100%;
+        height: 100%;
+        cursor: pointer;
+      }
+
+      .file-upload-label {
+        display: block;
+        padding: 12px 15px;
+        border: 1px dashed #ced4da;
+        border-radius: 8px;
+        background: #f8f9fa;
+        text-align: center;
+        transition: all 0.3s ease;
+      }
+
+      .file-upload:hover .file-upload-label {
+        background: #e9ecef;
+        transform: translateY(-2px);
+      }
+
+      .file-preview {
+        margin-top: 15px;
+        text-align: center;
+      }
+
+      .file-preview img {
+        max-width: 200px;
+        max-height: 200px;
+        border-radius: 8px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        animation: zoomIn 0.3s ease;
+      }
+
+      @keyframes zoomIn {
+        from {
+          opacity: 0;
+          transform: scale(0.8);
+        }
+        to {
+          opacity: 1;
+          transform: scale(1);
+        }
+      }
+
+      /* Form Actions */
+      .form-actions {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 30px;
+        padding-top: 20px;
+        border-top: 1px solid #e9ecef;
+      }
+
+      .btn {
+        padding: 12px 25px;
+        border: none;
+        border-radius: 8px;
+        font-size: 1rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .btn::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: rgba(255, 255, 255, 0.2);
+        transition: left 0.5s ease;
+      }
+
+      .btn:hover::before {
+        left: 100%;
+      }
+
+      .btn-primary {
+        background: linear-gradient(90deg, #0d3b66, #1f7a8c);
+        color: white;
+      }
+
+      .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(13, 59, 102, 0.3);
+      }
+
+      .btn-secondary {
+        background: #e9ecef;
+        color: #495057;
+      }
+
+      .btn-secondary:hover {
+        background: #dee2e6;
+        transform: translateY(-2px);
+      }
+
+      .btn:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+      }
+
+      /* Success Modal */
+      .modal {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.5);
+        z-index: 2000;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .modal.show {
+        display: flex;
+      }
+
+      .modal-content {
+        background: white;
+        border-radius: 15px;
+        padding: 30px;
+        max-width: 500px;
+        width: 90%;
+        text-align: center;
+        animation: modalFadeIn 0.3s ease;
+      }
+
+      @keyframes modalFadeIn {
+        from {
+          opacity: 0;
+          transform: scale(0.9);
+        }
+        to {
+          opacity: 1;
+          transform: scale(1);
+        }
+      }
+
+      .modal-icon {
+        font-size: 4rem;
+        color: #28a745;
+        margin-bottom: 20px;
+        animation: bounceIn 0.8s ease;
+      }
+
+      .modal-title {
+        font-size: 1.8rem;
+        font-weight: 700;
+        color: #333;
+        margin-bottom: 15px;
+      }
+
+      .modal-message {
+        font-size: 1.1rem;
+        color: #555;
+        margin-bottom: 25px;
+      }
+
+      .modal-button {
+        background: linear-gradient(90deg, #0d3b66, #1f7a8c);
+        color: white;
+        border: none;
+        padding: 12px 30px;
+        font-size: 1.1rem;
+        font-weight: 600;
+        border-radius: 50px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+      }
+
+      .modal-button:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(13, 59, 102, 0.3);
+      }
+
+      /* Footer */
+      footer {
+        background: linear-gradient(90deg, #0d3b66, #1f7a8c);
+        color: white;
+        padding: 20px;
+        text-align: center;
+      }
+
+      .footer-content {
+        max-width: 1200px;
+        margin: 0 auto;
+      }
+
+      .footer-links {
+        margin-bottom: 15px;
+      }
+
+      .footer-links a {
+        color: white;
+        text-decoration: none;
+        margin: 0 10px;
+        transition: all 0.3s ease;
+        position: relative;
+      }
+
+      .footer-links a::after {
+        content: "";
+        position: absolute;
+        bottom: -2px;
+        left: 0;
+        width: 0;
+        height: 2px;
+        background: white;
+        transition: width 0.3s ease;
+      }
+
+      .footer-links a:hover::after {
+        width: 100%;
+      }
+
+      .footer-links a:hover {
+        opacity: 0.8;
+      }
+
+      .footer-copyright {
+        font-size: 0.9rem;
+        opacity: 0.8;
+      }
+
+      /* Notification */
+      .notification {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        padding: 15px 20px;
+        border-radius: 8px;
+        color: white;
+        font-weight: 500;
+        z-index: 9999;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        transition: all 0.3s ease;
+        opacity: 0;
+        transform: translateY(-20px);
+      }
+
+      .notification.show {
+        opacity: 1;
+        transform: translateY(0);
+      }
+
+      /* Loading Overlay */
+      .loading-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.7);
+        display: none;
+        align-items: center;
+        justify-content: center;
+        z-index: 3000;
+      }
+
+      .loading-overlay.show {
+        display: flex;
+      }
+
+      .loading-content {
+        background: white;
+        border-radius: 15px;
+        padding: 30px;
+        text-align: center;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        animation: modalFadeIn 0.3s ease;
+      }
+
+      .loading-spinner {
         width: 60px;
         height: 60px;
+        border: 5px solid #f3f3f3;
+        border-top: 5px solid #0d3b66;
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+        margin: 0 auto 20px;
       }
 
-      /* Tambahkan ini untuk memperbesar font judul */
-      .header h2 {
-        font-size: 32px; /* Bisa diubah sesuai keinginan */
+      @keyframes spin {
+        0% {
+          transform: rotate(0deg);
+        }
+        100% {
+          transform: rotate(360deg);
+        }
+      }
+
+      .loading-text {
+        font-size: 1.2rem;
+        font-weight: 600;
+        color: #333;
+      }
+
+      /* Success Modal */
+      .success-modal {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.7);
+        display: none;
+        align-items: center;
+        justify-content: center;
+        z-index: 3000;
+      }
+
+      .success-modal.show {
+        display: flex;
+      }
+
+      .success-content {
+        background: white;
+        border-radius: 15px;
+        padding: 40px;
+        text-align: center;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        animation: modalFadeIn 0.3s ease;
+        max-width: 500px;
+        width: 90%;
+      }
+
+      .success-icon {
+        width: 80px;
+        height: 80px;
+        background: linear-gradient(135deg, #28a745, #20c997);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 20px;
+        box-shadow: 0 5px 15px rgba(40, 167, 69, 0.3);
+        animation: bounceIn 0.8s ease;
+      }
+
+      .success-icon::before {
+        content: "✓";
+        color: white;
+        font-size: 40px;
         font-weight: bold;
-        margin: 0;
       }
 
-      .info {
-        border-top: 1px solid #ddd;
-        margin-top: 10px;
-        padding-top: 10px;
+      .success-title {
+        font-size: 2rem;
+        font-weight: 700;
+        color: #333;
+        margin-bottom: 15px;
       }
 
-      .info p {
-        font-size: 18px;
-        margin: 8px 0;
+      .success-message {
+        font-size: 1.2rem;
+        color: #555;
+        margin-bottom: 30px;
+        line-height: 1.5;
       }
 
-      .status {
+      .success-button {
+        background: linear-gradient(90deg, #0d3b66, #1f7a8c);
+        color: white;
+        border: none;
+        padding: 15px 40px;
+        font-size: 1.1rem;
+        font-weight: 600;
+        border-radius: 50px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 15px rgba(13, 59, 102, 0.3);
+      }
+
+      .success-button:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(13, 59, 102, 0.4);
+      }
+
+      /* Responsive */
+      @media (max-width: 768px) {
+        .splash-title {
+          font-size: 1.5rem;
+        }
+
+        .splash-subtitle {
+          font-size: 1rem;
+        }
+
+        .loading-text {
+          font-size: 1.2rem;
+        }
+
+        .home-title {
+          font-size: 2rem;
+        }
+
+        .home-subtitle {
+          font-size: 1.5rem;
+        }
+
+        .steps {
+          padding: 20px 15px;
+        }
+
+        .step-circle {
+          width: 40px;
+          height: 40px;
+          font-size: 1rem;
+        }
+
+        .step-text {
+          font-size: 0.75rem;
+        }
+
+        .form-content {
+          padding: 20px;
+        }
+
+        .form-actions {
+          flex-direction: column;
+          gap: 10px;
+        }
+
+        .btn {
+          width: 100%;
+        }
+
+        .cta-container {
+          flex-direction: column;
+          align-items: center;
+        }
+
+        .cta-button {
+          width: 100%;
+          max-width: 300px;
+        }
+      }
+      .loading-text {
+        color: #ffffff; /* ganti sesuai warna yang diinginkan */
         font-weight: bold;
       }
-
-      
     </style>
   </head>
-
   <body>
-    <div class="status-card">
-      <div class="header">
-        <img src="logo1.png" />
-        <h2>Status Keanggotaan Pagar Nusa</h2>
-      </div>
-
-      <div class="info" id="info-box">
-        <p><b>Status:</b> <span id="status">...</span></p>
-        <p><b>Nama:</b> <span id="nama">...</span></p>
-        <p><b>NIA:</b> <span id="nia">...</span></p>
-        <p>
-          <b>Jabatan:</b>
-          <span id="jabatan"
-            >Anggota - pimpinan cabang kabupaten kediri</span
-          >
-        </p>
+    <!-- Splash Screen -->
+    <div id="splash">
+      <div class="splash-content">
+        <img src="logo1.png" alt="Logo Pagar Nusa" class="splash-logo" />
+        <h1 class="splash-title">PAGAR NUSA</h1>
+        <h2 class="splash-subtitle">
+          Aplikasi Pembuatan KTA & Sertifikat Digital
+        </h2>
+        <div class="loading-text">
+          LOADING...<span class="loading-dots"></span>
+        </div>
       </div>
     </div>
 
-    <script>
-      const params = new URLSearchParams(window.location.search);
-      const id = params.get("id") || "101"; // default jika tidak ada ID
+    <!-- Header -->
+    <header>
+      <div class="header-container">
+        <div class="brand">
+          <img src="logo1.png" alt="Logo Pagar Nusa" class="logo" />
+          <div class="brand-text">
+            <div class="brand-title">Pagar Nusa</div>
+            <div class="brand-subtitle">
+              Aplikasi Pembuatan KTA & Sertifikat Digital
+            </div>
+          </div>
+        </div>
+        <button class="home-button" onclick="goToHome()">
+          <svg
+            class="home-button-icon"
+            fill="currentColor"
+            viewBox="0 0 20 20"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z"
+            ></path>
+          </svg>
+          Beranda
+        </button>
+      </div>
+    </header>
 
-      if (!id) {
-        document.getElementById("info-box").innerHTML =
-          "<p>ID tidak ditemukan di URL</p>";
+    <!-- Main Content -->
+    <main>
+      <!-- Home Section -->
+      <section id="homeSection">
+        <div class="home-logo">
+          <img src="logo1.png" alt="Logo Pagar Nusa" />
+        </div>
+        <h1 class="home-title">
+          APLIKASI PEMBUATAN KARTU TANDA ANGGOTA (KTA) & SERTIFIKAT DIGITAL
+        </h1>
+        <h2 class="home-subtitle">PAGAR NUSA BUMI PANJALU</h2>
+        <p class="home-description">
+          Aplikasi resmi untuk pendaftaran dan pembuatan Kartu Tanda Anggota
+          (KTA) dan Sertifikat digital Pagar Nusa. Proses mudah, cepat, dan
+          terverifikasi.
+        </p>
+        <div class="cta-container">
+          <button class="cta-button" onclick="showForm()">
+            PENDAFTARAN KTA
+          </button>
+          <button
+            class="cta-button cta-button-secondary"
+            onclick="showCertificateForm()"
+          >
+            PENDAFTARAN SERTIFIKAT
+          </button>
+        </div>
+      </section>
+
+      <!-- Form Section KTA -->
+      <section id="formSection">
+        <div class="form-container">
+          <div class="form-header">
+            <h2>Formulir Pendaftaran KTA Digital</h2>
+            <p>Isi data dengan lengkap dan benar</p>
+          </div>
+
+          <!-- Steps Indicator - Improved -->
+          <div class="steps">
+            <div class="steps-container">
+              <div class="step active" id="step1Indicator">
+                <div class="step-circle">1</div>
+                <div class="step-text">Data Pribadi</div>
+                <div class="step-line"></div>
+              </div>
+              <div class="step" id="step2Indicator">
+                <div class="step-circle">2</div>
+                <div class="step-text">Data Latihan</div>
+                <div class="step-line"></div>
+              </div>
+              <div class="step" id="step3Indicator">
+                <div class="step-circle">3</div>
+                <div class="step-text">Data Institusi</div>
+                <div class="step-line"></div>
+              </div>
+              <div class="step" id="step4Indicator">
+                <div class="step-circle">4</div>
+                <div class="step-text">Dokumen</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Form Content -->
+          <div class="form-content">
+            <form id="regForm">
+              <!-- Step 1: Data Pribadi -->
+              <div class="step-content active" id="step1">
+                <div class="form-group">
+                  <label for="nik">NIK <span>*</span></label>
+                  <input
+                    type="text"
+                    id="nik"
+                    class="form-control"
+                    maxlength="16"
+                    required
+                  />
+                  <small class="form-text"
+                    >NIK sesuai KTP (Hanya angka & 16 digit)</small
+                  >
+                  <div class="error-message">NIK harus 16 digit angka</div>
+                </div>
+
+                <div class="form-group">
+                  <label for="email">Email <span>*</span></label>
+                  <input
+                    type="email"
+                    id="email"
+                    class="form-control"
+                    required
+                  />
+                  <div class="error-message">Email tidak valid</div>
+                </div>
+
+                <div class="form-group">
+                  <label for="nama">Nama Lengkap <span>*</span></label>
+                  <input type="text" id="nama" class="form-control" required />
+                  <small class="form-text"
+                    >Nama tanpa gelar dan karakter khusus</small
+                  >
+                  <div class="error-message">Nama lengkap harus diisi</div>
+                </div>
+
+                <div class="form-group">
+                  <label for="tempat_lahir">Tempat Lahir <span>*</span></label>
+                  <input
+                    type="text"
+                    id="tempat_lahir"
+                    class="form-control"
+                    required
+                  />
+                  <div class="error-message">Tempat lahir harus diisi</div>
+                </div>
+
+                <div class="form-group">
+                  <label for="tanggal_lahir"
+                    >Tanggal Lahir <span>*</span></label
+                  >
+                  <input
+                    type="date"
+                    id="tanggal_lahir"
+                    class="form-control"
+                    required
+                  />
+                  <div class="error-message">Tanggal lahir harus diisi</div>
+                </div>
+
+                <div class="form-group">
+                  <label for="jk">Jenis Kelamin <span>*</span></label>
+                  <select id="jk" class="form-control" required>
+                    <option value="">Pilih...</option>
+                    <option value="Laki-laki">Laki-laki</option>
+                    <option value="Perempuan">Perempuan</option>
+                  </select>
+                  <div class="error-message">Jenis kelamin harus dipilih</div>
+                </div>
+
+                <div class="form-group">
+                  <label for="hp">Nomor HP/WA <span>*</span></label>
+                  <input type="text" id="hp" class="form-control" required />
+                  <small class="form-text">Contoh: 081xxxXXXxxx</small>
+                  <div class="error-message">Nomor HP harus diisi</div>
+                </div>
+
+                <div class="form-actions">
+                  <div></div>
+                  <button
+                    type="button"
+                    class="btn btn-primary"
+                    onclick="nextStep(1)"
+                  >
+                    Selanjutnya →
+                  </button>
+                </div>
+              </div>
+
+              <!-- Step 2: Data Latihan -->
+              <div class="step-content" id="step2">
+                <div class="form-group">
+                  <label for="nama_pelatih">Nama Pelatih <span>*</span></label>
+                  <input
+                    type="text"
+                    id="nama_pelatih"
+                    class="form-control"
+                    required
+                  />
+                  <div class="error-message">Nama pelatih harus diisi</div>
+                </div>
+
+                <div class="form-group">
+                  <label for="lokasi_latihan"
+                    >Lokasi Latihan <span>*</span></label
+                  >
+                  <input
+                    type="text"
+                    id="lokasi_latihan"
+                    class="form-control"
+                    required
+                  />
+                  <div class="error-message">Lokasi latihan harus diisi</div>
+                </div>
+
+                <div class="form-group">
+                  <label for="provinsi">Provinsi <span>*</span></label>
+                  <select
+                    id="provinsi"
+                    class="form-control"
+                    onchange="populateKab()"
+                    required
+                  >
+                    <option value="">-- Pilih Provinsi --</option>
+                  </select>
+                  <div class="error-message">Provinsi harus dipilih</div>
+                </div>
+
+                <div class="form-group">
+                  <label for="kabupaten">Kabupaten/Kota <span>*</span></label>
+                  <select
+                    id="kabupaten"
+                    class="form-control"
+                    onchange="populateKec()"
+                    required
+                  >
+                    <option value="">-- Pilih Kabupaten/Kota --</option>
+                  </select>
+                  <div class="error-message">Kabupaten/Kota harus dipilih</div>
+                </div>
+
+                <div class="form-group">
+                  <label for="kecamatan">Kecamatan <span>*</span></label>
+                  <select
+                    id="kecamatan"
+                    class="form-control"
+                    onchange="populateDesa()"
+                    required
+                  >
+                    <option value="">-- Pilih Kecamatan --</option>
+                  </select>
+                  <div class="error-message">Kecamatan harus dipilih</div>
+                </div>
+
+                <div class="form-group">
+                  <label for="desa">Kelurahan <span>*</span></label>
+                  <select id="desa" class="form-control" required>
+                    <option value="">-- Pilih Desa --</option>
+                  </select>
+                  <div class="error-message">Kelurahan harus dipilih</div>
+                </div>
+
+                <div class="form-group">
+                  <label>Apakah Anda Pengurus? <span>*</span></label>
+                  <div class="radio-group">
+                    <div class="radio-option">
+                      <input
+                        type="radio"
+                        id="pengurus_ya"
+                        name="pengurus"
+                        value="ya"
+                        required
+                      />
+                      <label for="pengurus_ya">Ya, Saya Pengurus</label>
+                    </div>
+                    <div class="radio-option">
+                      <input
+                        type="radio"
+                        id="pengurus_tidak"
+                        name="pengurus"
+                        value="tidak"
+                        required
+                      />
+                      <label for="pengurus_tidak">Bukan Pengurus</label>
+                    </div>
+                  </div>
+                  <div class="error-message">Pilih salah satu opsi</div>
+                </div>
+
+                <div class="form-actions">
+                  <button
+                    type="button"
+                    class="btn btn-secondary"
+                    onclick="goToStep(1)"
+                  >
+                    ← Kembali
+                  </button>
+                  <button
+                    type="button"
+                    class="btn btn-primary"
+                    onclick="nextStep(2)"
+                  >
+                    Selanjutnya →
+                  </button>
+                </div>
+              </div>
+
+              <!-- Step 3: Data Institusi -->
+              <div class="step-content" id="step3">
+                <div class="checkbox-group">
+                  <div class="checkbox-item">
+                    <input
+                      type="checkbox"
+                      id="chk_padepokan"
+                      onchange="toggleInstitution('padepokan')"
+                    />
+                    <label for="chk_padepokan">Padepokan</label>
+                  </div>
+                  <div id="padepokanFields" class="institution-fields">
+                    <div class="form-group">
+                      <label for="nama_perguruan_padepokan"
+                        >Nama Perguruan</label
+                      >
+                      <input
+                        type="text"
+                        id="nama_perguruan_padepokan"
+                        class="form-control"
+                      />
+                    </div>
+                    <div class="form-group">
+                      <label for="nama_pengasuh_padepokan"
+                        >Nama Pengasuh Perguruan/Padepokan</label
+                      >
+                      <input
+                        type="text"
+                        id="nama_pengasuh_padepokan"
+                        class="form-control"
+                      />
+                    </div>
+                    <div class="form-group">
+                      <label for="nomor_hp_padepokan"
+                        >Nomor HP Perguruan/Padepokan</label
+                      >
+                      <input
+                        type="text"
+                        id="nomor_hp_padepokan"
+                        class="form-control"
+                      />
+                    </div>
+                    <div class="form-group">
+                      <label for="alamat_padepokan">Alamat Padepokan</label>
+                      <input
+                        type="text"
+                        id="alamat_padepokan"
+                        class="form-control"
+                      />
+                    </div>
+                  </div>
+
+                  <div class="checkbox-item">
+                    <input
+                      type="checkbox"
+                      id="chk_pesantren"
+                      onchange="toggleInstitution('pesantren')"
+                    />
+                    <label for="chk_pesantren">Pesantren</label>
+                  </div>
+                  <div id="pesantrenFields" class="institution-fields">
+                    <div class="form-group">
+                      <label for="nama_perguruan_pesantren"
+                        >Nama Perguruan</label
+                      >
+                      <input
+                        type="text"
+                        id="nama_perguruan_pesantren"
+                        class="form-control"
+                      />
+                    </div>
+                    <div class="form-group">
+                      <label for="nama_pengasuh_pesantren"
+                        >Nama Pengasuh Pesantren</label
+                      >
+                      <input
+                        type="text"
+                        id="nama_pengasuh_pesantren"
+                        class="form-control"
+                      />
+                    </div>
+                    <div class="form-group">
+                      <label for="nomor_hp_pesantren">Nomor HP Pesantren</label>
+                      <input
+                        type="text"
+                        id="nomor_hp_pesantren"
+                        class="form-control"
+                      />
+                    </div>
+                    <div class="form-group">
+                      <label for="alamat_pesantren">Alamat Pesantren</label>
+                      <input
+                        type="text"
+                        id="alamat_pesantren"
+                        class="form-control"
+                      />
+                    </div>
+                  </div>
+
+                  <div class="checkbox-item">
+                    <input
+                      type="checkbox"
+                      id="chk_sekolah"
+                      onchange="toggleInstitution('sekolah')"
+                    />
+                    <label for="chk_sekolah">Sekolah</label>
+                  </div>
+                  <div id="sekolahFields" class="institution-fields">
+                    <div class="form-group">
+                      <label for="nama_instansi_sekolah"
+                        >Nama Instansi Sekolah</label
+                      >
+                      <input
+                        type="text"
+                        id="nama_instansi_sekolah"
+                        class="form-control"
+                      />
+                    </div>
+                    <div class="form-group">
+                      <label for="nama_sekolah">Nama Sekolah</label>
+                      <input
+                        type="text"
+                        id="nama_sekolah"
+                        class="form-control"
+                      />
+                    </div>
+                    <div class="form-group">
+                      <label for="nomor_hp_sekolah">Nomor HP Sekolah</label>
+                      <input
+                        type="text"
+                        id="nomor_hp_sekolah"
+                        class="form-control"
+                      />
+                    </div>
+                    <div class="form-group">
+                      <label for="alamat_sekolah">Alamat Sekolah</label>
+                      <input
+                        type="text"
+                        id="alamat_sekolah"
+                        class="form-control"
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                <div class="form-actions">
+                  <button
+                    type="button"
+                    class="btn btn-secondary"
+                    onclick="goToStep(2)"
+                  >
+                    ← Kembali
+                  </button>
+                  <button
+                    type="button"
+                    class="btn btn-primary"
+                    onclick="nextStep(3)"
+                  >
+                    Selanjutnya →
+                  </button>
+                </div>
+              </div>
+
+              <!-- Step 4: Dokumen -->
+              <div class="step-content" id="step4">
+                <div class="form-group">
+                  <label for="foto">Upload Foto <span>*</span></label>
+                  <div class="file-upload">
+                    <input
+                      type="file"
+                      id="foto"
+                      accept="image/*"
+                      onchange="previewImage('foto', 'previewFoto')"
+                      required
+                    />
+                    <label for="foto" class="file-upload-label">
+                      Pilih Foto
+                    </label>
+                  </div>
+                  <small class="form-text"
+                    >Upload Foto (max 10MB). Ketentuan: background merah,
+                    bersakral lengkap, perempuan wajib hijab, ukuran 3x4 max
+                    5mb</small
+                  >
+                  <div class="error-message">Foto harus diunggah</div>
+                  <div id="previewFoto" class="file-preview"></div>
+                </div>
+
+                <div class="form-group">
+                  <label for="ktp">Upload KK/KTP <span>*</span></label>
+                  <div class="file-upload">
+                    <input
+                      type="file"
+                      id="ktp"
+                      accept="image/*"
+                      onchange="previewImage('ktp', 'previewKTP')"
+                      required
+                    />
+                    <label for="ktp" class="file-upload-label">
+                      Pilih KK/KTP
+                    </label>
+                  </div>
+                  <div class="error-message">KK/KTP harus diunggah</div>
+                  <div id="previewKTP" class="file-preview"></div>
+                </div>
+
+                <div class="form-actions">
+                  <button
+                    type="button"
+                    class="btn btn-secondary"
+                    onclick="goToStep(3)"
+                  >
+                    ← Kembali
+                  </button>
+                  <button
+                    type="button"
+                    class="btn btn-primary"
+                    onclick="submitForm()"
+                  >
+                    Kirim
+                  </button>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+      </section>
+
+      <!-- Certificate Form Section -->
+      <section id="certificateFormSection">
+        <div class="form-container">
+          <div class="form-header">
+            <h2>Formulir Pendaftaran Sertifikat Digital</h2>
+            <p>Isi data dengan lengkap dan benar</p>
+          </div>
+
+          <!-- Form Content -->
+          <div class="form-content">
+            <form id="certForm">
+              <!-- Step 1: Data Pribadi -->
+              <div class="step-content active" id="certStep1">
+                <div class="form-group">
+                  <label for="cert_nama">Nama Lengkap <span>*</span></label>
+                  <input
+                    type="text"
+                    id="cert_nama"
+                    class="form-control"
+                    required
+                  />
+                  <small class="form-text"
+                    >Nama tanpa gelar dan karakter khusus</small
+                  >
+                  <div class="error-message">Nama lengkap harus diisi</div>
+                </div>
+
+                <div class="form-group">
+                  <label for="cert_ttl"
+                    >Tempat & Tanggal Lahir <span>*</span></label
+                  >
+                  <div style="display: flex; gap: 10px">
+                    <input
+                      type="text"
+                      id="cert_tempat_lahir"
+                      class="form-control"
+                      placeholder="Tempat Lahir"
+                      style="flex: 1"
+                      required
+                    />
+                    <input
+                      type="date"
+                      id="cert_tanggal_lahir"
+                      class="form-control"
+                      style="flex: 1"
+                      required
+                    />
+                  </div>
+                  <div class="error-message">
+                    Tempat dan tanggal lahir harus diisi
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <label for="cert_hp">Nomor HP/WA <span>*</span></label>
+                  <input
+                    type="text"
+                    id="cert_hp"
+                    class="form-control"
+                    required
+                  />
+                  <small class="form-text">Contoh: 081xxxXXXxxx</small>
+                  <div class="error-message">Nomor HP harus diisi</div>
+                </div>
+
+                <div class="form-actions">
+                  <div></div>
+                  <button
+                    type="button"
+                    class="btn btn-primary"
+                    onclick="nextCertStep(1)"
+                  >
+                    Selanjutnya →
+                  </button>
+                </div>
+              </div>
+
+              <!-- Step 2: Data Lokasi -->
+              <div class="step-content" id="certStep2">
+                <div class="form-group">
+                  <label for="cert_kabupaten"
+                    >Kabupaten/Kota <span>*</span></label
+                  >
+                  <select
+                    id="cert_kabupaten"
+                    class="form-control"
+                    onchange="populateCertKec()"
+                    required
+                  >
+                    <option value="">-- Pilih Kabupaten/Kota --</option>
+                  </select>
+                  <div class="error-message">Kabupaten/Kota harus dipilih</div>
+                </div>
+
+                <div class="form-group">
+                  <label for="cert_kecamatan">Kecamatan <span>*</span></label>
+                  <select
+                    id="cert_kecamatan"
+                    class="form-control"
+                    onchange="populateCertDesa()"
+                    required
+                  >
+                    <option value="">-- Pilih Kecamatan --</option>
+                  </select>
+                  <div class="error-message">Kecamatan harus dipilih</div>
+                </div>
+
+                <div class="form-group">
+                  <label for="cert_desa">Desa <span>*</span></label>
+                  <select id="cert_desa" class="form-control" required>
+                    <option value="">-- Pilih Desa --</option>
+                  </select>
+                  <div class="error-message">Desa harus dipilih</div>
+                </div>
+
+                <div class="form-actions">
+                  <button
+                    type="button"
+                    class="btn btn-secondary"
+                    onclick="goToCertStep(1)"
+                  >
+                    ← Kembali
+                  </button>
+                  <button
+                    type="button"
+                    class="btn btn-primary"
+                    onclick="submitCertificateForm()"
+                  >
+                    Kirim
+                  </button>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- Loading Overlay -->
+    <div id="loadingOverlay" class="loading-overlay">
+      <div class="loading-content">
+        <div class="loading-spinner"></div>
+        <div class="loading-text">Sedang mengirim data...</div>
+      </div>
+    </div>
+
+    <!-- Success Modal -->
+    <div id="successModal" class="success-modal">
+      <div class="success-content">
+        <div class="success-icon"></div>
+        <h3 class="success-title">Pendaftaran Berhasil!</h3>
+        <p class="success-message">
+          Data Anda sudah terdaftar dalam sistem Pagar Nusa.<br />
+          Tim kami akan segera memverifikasi data Anda.<br />
+          Terima kasih atas kepercayaan Anda.
+        </p>
+        <button class="success-button" onclick="closeSuccessModal()">OK</button>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+      <div class="footer-content">
+        <div class="footer-links">
+          <a href="mailto:bumipanjalupagarnusa@gmail.com"
+            >Email: bumipanjalupagarnusa@gmail.com</a
+          >
+          <a href="tel:081217035139">Tel: 0812-1703-5139</a>
+          <a href="tel:081217499688">Tel: 0812-1749-9688</a>
+        </div>
+        <div class="footer-copyright">
+          &copy; 2026 Pagar Nusa - Hak Cipta Dilindungi
+        </div>
+      </div>
+    </footer>
+
+    <script>
+      // Global variables
+      let currentStep = 1;
+      let currentCertStep = 1;
+      const totalSteps = 4;
+      const totalCertSteps = 2;
+      const scriptURL =
+        "https://script.google.com/macros/s/AKfycbzzcYhwLyKmzV9sqCSskzawbbNyIzX2iLoDsEFqxwJxNQvN53bURw5m1llHpe3dUrW5yA/exec";
+      const certificateScriptURL =
+        "https://script.google.com/macros/s/AKfycbxGB8Fa1RoQMSfCzl4joD530ze8d4f99Z81pjlfJ1ePE1epvnfkGUv_ZYInv25sSY8/exec"; // Ganti dengan URL script untuk sertifikat
+
+      // Initialize page
+      window.addEventListener("DOMContentLoaded", () => {
+        // Hide splash screen after 2.5 seconds
+        setTimeout(() => {
+          const splash = document.getElementById("splash");
+          splash.style.opacity = "0";
+          setTimeout(() => {
+            splash.style.display = "none";
+          }, 500);
+        }, 2500);
+
+        // Setup NIK validation
+        setupNIKValidation();
+
+        // Setup form validation
+        setupFormValidation();
+
+        // Setup uppercase for text inputs
+        setupUppercaseInputs();
+
+        // Populate provinces
+        populateProv();
+
+        // Populate certificate kabupaten
+        populateCertKab();
+      });
+
+      // Setup uppercase for text inputs
+      function setupUppercaseInputs() {
+        const textInputs = document.querySelectorAll(
+          'input[type="text"]:not(#email)',
+        );
+        textInputs.forEach((input) => {
+          input.addEventListener("input", function () {
+            this.value = this.value.toUpperCase();
+          });
+        });
       }
 
-      // GANTI INI:
-      const webAppUrl =
-        "https://script.google.com/macros/s/AKfycbx15LzQKGid6_FoyO-Eu00Yk8-GGJCBSmuord9p7tocpDE4JsSEXO6VVfUCJHESlUdb6g/exec";
+      // Go to home
+      function goToHome() {
+        document.getElementById("homeSection").style.display = "block";
+        document.getElementById("formSection").style.display = "none";
+        document.getElementById("certificateFormSection").style.display =
+          "none";
+        window.scrollTo(0, 0);
+      }
 
-      fetch(webAppUrl + "?id=" + id)
-        .then((res) => res.json())
-        .then((data) => {
-          if (data.error) {
-            document.getElementById("info-box").innerHTML =
-              "<p>" + data.error + "</p>";
-            return;
-          }
+      // Show form section
+      function showForm() {
+        document.getElementById("homeSection").style.display = "none";
+        document.getElementById("certificateFormSection").style.display =
+          "none";
+        document.getElementById("formSection").style.display = "block";
+        window.scrollTo(0, 0);
+      }
 
-          document.getElementById("status").textContent = data.status;
-          document.getElementById("nama").textContent = data.nama;
-          document.getElementById("nia").textContent = data.nia;
+      // Show certificate form section
+      function showCertificateForm() {
+        document.getElementById("homeSection").style.display = "none";
+        document.getElementById("formSection").style.display = "none";
+        document.getElementById("certificateFormSection").style.display =
+          "block";
+        window.scrollTo(0, 0);
+      }
 
-          if (
-            String(data.status).toLowerCase() === "aktif" ||
-            String(data.status).toLowerCase() === "terverifikasi"
-          ) {
-            document.getElementById("status").style.color = "green";
+      // Go to specific step
+      function goToStep(step) {
+        // Update current step
+        currentStep = step;
+
+        // Update step indicators
+        for (let i = 1; i <= totalSteps; i++) {
+          const stepIndicator = document.getElementById(
+            "step" + i + "Indicator",
+          );
+          const stepContent = document.getElementById("step" + i);
+
+          if (i < step) {
+            stepIndicator.classList.add("completed");
+            stepIndicator.classList.remove("active");
+          } else if (i === step) {
+            stepIndicator.classList.add("active");
+            stepIndicator.classList.remove("completed");
           } else {
-            document.getElementById("status").style.color = "red";
+            stepIndicator.classList.remove("active", "completed");
           }
-        })
-        .catch(() => {
-          document.getElementById("info-box").innerHTML =
-            "<p>Gagal memuat data</p>";
+
+          stepContent.classList.toggle("active", i === step);
+        }
+
+        window.scrollTo(0, 0);
+      }
+
+      // Go to specific certificate step
+      function goToCertStep(step) {
+        // Update current step
+        currentCertStep = step;
+
+        // Update step content
+        for (let i = 1; i <= totalCertSteps; i++) {
+          const stepContent = document.getElementById("certStep" + i);
+          stepContent.classList.toggle("active", i === step);
+        }
+
+        window.scrollTo(0, 0);
+      }
+
+      // Next step
+      function nextStep(step) {
+        if (validateStep(step)) {
+          goToStep(step + 1);
+        }
+      }
+
+      // Next certificate step
+      function nextCertStep(step) {
+        if (validateCertStep(step)) {
+          goToCertStep(step + 1);
+        }
+      }
+
+      // Validate step
+      function validateStep(step) {
+        const stepElement = document.getElementById("step" + step);
+        const requiredFields = stepElement.querySelectorAll("[required]");
+        let isValid = true;
+
+        requiredFields.forEach((field) => {
+          // Remove previous error states
+          field.classList.remove("error");
+          const errorMsg = field.parentElement.querySelector(".error-message");
+          if (errorMsg) errorMsg.style.display = "none";
+
+          // Check if field is valid
+          if (!field.value.trim()) {
+            field.classList.add("error");
+            if (errorMsg) errorMsg.style.display = "block";
+            isValid = false;
+          }
+
+          // Special validation for NIK
+          if (field.id === "nik" && field.value.trim().length !== 16) {
+            field.classList.add("error");
+            if (errorMsg) errorMsg.style.display = "block";
+            isValid = false;
+          }
+
+          // Special validation for email
+          if (field.id === "email" && !validateEmail(field.value)) {
+            field.classList.add("error");
+            if (errorMsg) errorMsg.style.display = "block";
+            isValid = false;
+          }
+
+          // Special validation for radio buttons
+          if (field.type === "radio") {
+            const radioGroup = stepElement.querySelectorAll(
+              `input[name="${field.name}"]`,
+            );
+            const isChecked = Array.from(radioGroup).some(
+              (radio) => radio.checked,
+            );
+
+            if (!isChecked) {
+              const errorMsg =
+                stepElement.querySelector(
+                  `.error-message[for="${field.name}"]`,
+                ) ||
+                stepElement
+                  .querySelector(".radio-group")
+                  .parentElement.querySelector(".error-message");
+              if (errorMsg) errorMsg.style.display = "block";
+              isValid = false;
+            }
+          }
         });
+
+        return isValid;
+      }
+
+      // Validate certificate step
+      function validateCertStep(step) {
+        const stepElement = document.getElementById("certStep" + step);
+        const requiredFields = stepElement.querySelectorAll("[required]");
+        let isValid = true;
+
+        requiredFields.forEach((field) => {
+          // Remove previous error states
+          field.classList.remove("error");
+          const errorMsg = field.parentElement.querySelector(".error-message");
+          if (errorMsg) errorMsg.style.display = "none";
+
+          // Check if field is valid
+          if (!field.value.trim()) {
+            field.classList.add("error");
+            if (errorMsg) errorMsg.style.display = "block";
+            isValid = false;
+          }
+        });
+
+        return isValid;
+      }
+
+      // Setup NIK validation
+      function setupNIKValidation() {
+        const nikInput = document.getElementById("nik");
+        nikInput.addEventListener("input", function (e) {
+          // Only allow numbers
+          this.value = this.value.replace(/[^0-9]/g, "");
+          // Max 16 digits
+          if (this.value.length > 16) {
+            this.value = this.value.slice(0, 16);
+          }
+        });
+
+        // Check NIK availability on blur
+        nikInput.addEventListener("blur", async function () {
+          if (this.value.trim().length === 16) {
+            try {
+              const formData = new FormData();
+              formData.append("action", "check_nik");
+              formData.append("nik", this.value);
+
+              const response = await fetch(scriptURL, {
+                method: "POST",
+                body: formData,
+              });
+
+              const result = await response.json();
+
+              if (result.exists) {
+                this.classList.add("error");
+                const errorMsg =
+                  this.parentElement.querySelector(".error-message");
+                if (errorMsg) {
+                  errorMsg.textContent =
+                    "NIK sudah terdaftar, tidak bisa mendaftar lagi";
+                  errorMsg.style.display = "block";
+                }
+
+                // Disable submit button
+                const submitButton = document.querySelector(
+                  'button[onclick="submitForm()"]',
+                );
+                if (submitButton) {
+                  submitButton.disabled = true;
+                  submitButton.textContent = "NIK Sudah Terdaftar";
+                }
+              } else {
+                // Enable submit button if NIK is available
+                const submitButton = document.querySelector(
+                  'button[onclick="submitForm()"]',
+                );
+                if (submitButton) {
+                  submitButton.disabled = false;
+                  submitButton.textContent = "Kirim";
+                }
+              }
+            } catch (error) {
+              console.error("Error checking NIK:", error);
+            }
+          }
+        });
+      }
+
+      // Setup form validation
+      function setupFormValidation() {
+        const formInputs = document.querySelectorAll(".form-control");
+        formInputs.forEach((input) => {
+          input.addEventListener("blur", function () {
+            if (this.hasAttribute("required") && !this.value.trim()) {
+              this.classList.add("error");
+              const errorMsg =
+                this.parentElement.querySelector(".error-message");
+              if (errorMsg) errorMsg.style.display = "block";
+            } else {
+              this.classList.remove("error");
+              const errorMsg =
+                this.parentElement.querySelector(".error-message");
+              if (errorMsg) errorMsg.style.display = "none";
+            }
+          });
+
+          input.addEventListener("focus", function () {
+            this.classList.remove("error");
+            const errorMsg = this.parentElement.querySelector(".error-message");
+            if (errorMsg) errorMsg.style.display = "none";
+          });
+        });
+      }
+
+      // Toggle institution fields
+      function toggleInstitution(type) {
+        const checkbox = document.getElementById("chk_" + type);
+        const fields = document.getElementById(type + "Fields");
+
+        if (checkbox.checked) {
+          fields.classList.add("show");
+        } else {
+          fields.classList.remove("show");
+        }
+      }
+
+      // Preview image
+      function previewImage(inputId, previewId) {
+        const input = document.getElementById(inputId);
+        const preview = document.getElementById(previewId);
+
+        if (input.files && input.files[0]) {
+          const reader = new FileReader();
+
+          reader.onload = function (e) {
+            preview.innerHTML = `<img src="${e.target.result}" alt="Preview" />`;
+          };
+
+          reader.readAsDataURL(input.files[0]);
+        }
+      }
+
+      // Submit form
+      async function submitForm() {
+        if (!validateStep(4)) {
+          showNotification(
+            "Harap lengkapi semua field yang wajib diisi",
+            "warning",
+          );
+          return;
+        }
+
+        // Check if NIK is already registered
+        const nikInput = document.getElementById("nik");
+        if (nikInput.classList.contains("error")) {
+          showNotification(
+            "NIK sudah terdaftar, tidak bisa mendaftar lagi",
+            "error",
+          );
+          return;
+        }
+
+        try {
+          // Show loading overlay
+          document.getElementById("loadingOverlay").classList.add("show");
+
+          // Get form data
+          const formData = new FormData();
+          formData.append("action", "submit");
+          formData.append("NIK", document.getElementById("nik").value);
+          formData.append("Email", document.getElementById("email").value);
+          formData.append("Nama", document.getElementById("nama").value);
+          formData.append(
+            "Tempat_Lahir",
+            document.getElementById("tempat_lahir").value,
+          );
+          formData.append(
+            "Tanggal_Lahir",
+            document.getElementById("tanggal_lahir").value,
+          );
+          formData.append("Jenis_Kelamin", document.getElementById("jk").value);
+          formData.append("HP", document.getElementById("hp").value);
+          formData.append(
+            "Nama_Pelatih",
+            document.getElementById("nama_pelatih").value,
+          );
+          formData.append(
+            "Lokasi_Latihan",
+            document.getElementById("lokasi_latihan").value,
+          );
+          formData.append(
+            "Provinsi",
+            document.getElementById("provinsi").value,
+          );
+          formData.append(
+            "Kabupaten_Kota",
+            document.getElementById("kabupaten").value,
+          );
+          formData.append(
+            "Kecamatan",
+            document.getElementById("kecamatan").value,
+          );
+          formData.append("Desa", document.getElementById("desa").value);
+
+          // Add pengurus status
+          const pengurusRadios = document.getElementsByName("pengurus");
+          const pengurusStatus =
+            Array.from(pengurusRadios).find((radio) => radio.checked)?.value ||
+            "";
+          formData.append("Pengurus", pengurusStatus);
+
+          // Add institution data if checked
+          if (document.getElementById("chk_padepokan").checked) {
+            formData.append(
+              "Padepokan_Nama_Perguruan",
+              document.getElementById("nama_perguruan_padepokan").value,
+            );
+            formData.append(
+              "Padepokan_Nama_Pengasuh",
+              document.getElementById("nama_pengasuh_padepokan").value,
+            );
+            formData.append(
+              "Padepokan_Nomor_HP",
+              document.getElementById("nomor_hp_padepokan").value,
+            );
+            formData.append(
+              "Padepokan_Alamat",
+              document.getElementById("alamat_padepokan").value,
+            );
+          }
+
+          if (document.getElementById("chk_pesantren").checked) {
+            formData.append(
+              "Pesantren_Nama_Perguruan",
+              document.getElementById("nama_perguruan_pesantren").value,
+            );
+            formData.append(
+              "Pesantren_Nama_Pengasuh",
+              document.getElementById("nama_pengasuh_pesantren").value,
+            );
+            formData.append(
+              "Pesantren_Nomor_HP",
+              document.getElementById("nomor_hp_pesantren").value,
+            );
+            formData.append(
+              "Pesantren_Alamat",
+              document.getElementById("alamat_pesantren").value,
+            );
+          }
+
+          if (document.getElementById("chk_sekolah").checked) {
+            formData.append(
+              "Sekolah_Nama_Instansi",
+              document.getElementById("nama_instansi_sekolah").value,
+            );
+            formData.append(
+              "Sekolah_Nama_Sekolah",
+              document.getElementById("nama_sekolah").value,
+            );
+            formData.append(
+              "Sekolah_Nomor_HP",
+              document.getElementById("nomor_hp_sekolah").value,
+            );
+            formData.append(
+              "Sekolah_Alamat",
+              document.getElementById("alamat_sekolah").value,
+            );
+          }
+
+          // Add files
+          const fotoFile = document.getElementById("foto").files[0];
+          const ktpFile = document.getElementById("ktp").files[0];
+
+          if (fotoFile) {
+            formData.append("Foto", await fileToBase64(fotoFile));
+          }
+
+          if (ktpFile) {
+            formData.append("Foto_KTP", await fileToBase64(ktpFile));
+          }
+
+          // Send data to Google Sheets
+          const response = await fetch(scriptURL, {
+            method: "POST",
+            body: formData,
+          });
+
+          const result = await response.json();
+
+          // Hide loading overlay
+          document.getElementById("loadingOverlay").classList.remove("show");
+
+          if (result.result === "success") {
+            // Show success modal
+            document.getElementById("successModal").classList.add("show");
+          } else if (result.result === "duplicate") {
+            showNotification("⚠️ NIK sudah terdaftar!", "error");
+          } else {
+            showNotification(
+              "❌ Terjadi kesalahan: " + JSON.stringify(result),
+              "error",
+            );
+          }
+        } catch (error) {
+          // Hide loading overlay
+          document.getElementById("loadingOverlay").classList.remove("show");
+          showNotification("❌ Gagal mengirim data: " + error.message, "error");
+        }
+      }
+
+      // Submit certificate form
+      async function submitCertificateForm() {
+        if (!validateCertStep(2)) {
+          showNotification(
+            "Harap lengkapi semua field yang wajib diisi",
+            "warning",
+          );
+          return;
+        }
+
+        try {
+          // Show loading overlay
+          document.getElementById("loadingOverlay").classList.add("show");
+
+          // Get form data
+          const formData = new FormData();
+          formData.append("action", "submit_certificate");
+          formData.append("Nama", document.getElementById("cert_nama").value);
+          formData.append(
+            "Tempat_Lahir",
+            document.getElementById("cert_tempat_lahir").value,
+          );
+          formData.append(
+            "Tanggal_Lahir",
+            document.getElementById("cert_tanggal_lahir").value,
+          );
+          formData.append("HP", document.getElementById("cert_hp").value);
+          formData.append(
+            "Kabupaten_Kota",
+            document.getElementById("cert_kabupaten").value,
+          );
+          formData.append(
+            "Kecamatan",
+            document.getElementById("cert_kecamatan").value,
+          );
+          formData.append("Desa", document.getElementById("cert_desa").value);
+
+          // Send data to Google Sheets
+          const response = await fetch(certificateScriptURL, {
+            method: "POST",
+            body: formData,
+          });
+
+          const result = await response.json();
+
+          // Hide loading overlay
+          document.getElementById("loadingOverlay").classList.remove("show");
+
+          if (result.result === "success") {
+            // Show success modal
+            document.getElementById("successModal").classList.add("show");
+          } else {
+            showNotification(
+              "❌ Terjadi kesalahan: " + JSON.stringify(result),
+              "error",
+            );
+          }
+        } catch (error) {
+          // Hide loading overlay
+          document.getElementById("loadingOverlay").classList.remove("show");
+          showNotification("❌ Gagal mengirim data: " + error.message, "error");
+        }
+      }
+
+      // Convert file to base64
+      function fileToBase64(file) {
+        return new Promise((resolve, reject) => {
+          const reader = new FileReader();
+          reader.onload = () => resolve(reader.result.split(",")[1]);
+          reader.onerror = reject;
+          reader.readAsDataURL(file);
+        });
+      }
+
+      // Close success modal
+      function closeSuccessModal() {
+        document.getElementById("successModal").classList.remove("show");
+
+        // Reset form
+        resetForm();
+        resetCertificateForm();
+
+        // Go back to home
+        document.getElementById("formSection").style.display = "none";
+        document.getElementById("certificateFormSection").style.display =
+          "none";
+        document.getElementById("homeSection").style.display = "block";
+        window.scrollTo(0, 0);
+      }
+
+      // Reset form
+      function resetForm() {
+        // Reset form
+        document.getElementById("regForm").reset();
+
+        // Clear previews
+        document.getElementById("previewFoto").innerHTML = "";
+        document.getElementById("previewKTP").innerHTML = "";
+
+        // Hide institution fields
+        document.querySelectorAll(".institution-fields").forEach((field) => {
+          field.classList.remove("show");
+        });
+
+        // Uncheck all checkboxes
+        document
+          .querySelectorAll("input[type='checkbox']")
+          .forEach((checkbox) => {
+            checkbox.checked = false;
+          });
+
+        // Reset steps
+        goToStep(1);
+
+        // Reset submit button
+        const submitButton = document.querySelector(
+          'button[onclick="submitForm()"]',
+        );
+        if (submitButton) {
+          submitButton.disabled = false;
+          submitButton.textContent = "Kirim";
+        }
+      }
+
+      // Reset certificate form
+      function resetCertificateForm() {
+        // Reset form
+        document.getElementById("certForm").reset();
+
+        // Reset steps
+        goToCertStep(1);
+      }
+
+      // Show notification
+      function showNotification(message, type = "info") {
+        // Remove existing notification
+        hideNotification();
+
+        // Create notification element
+        const notification = document.createElement("div");
+        notification.className = "notification";
+        notification.textContent = message;
+
+        // Set background color based on type
+        switch (type) {
+          case "success":
+            notification.style.backgroundColor = "#28a745";
+            break;
+          case "error":
+            notification.style.backgroundColor = "#dc3545";
+            break;
+          case "warning":
+            notification.style.backgroundColor = "#ffc107";
+            notification.style.color = "#212529";
+            break;
+          default:
+            notification.style.backgroundColor = "#0d3b66";
+        }
+
+        // Add to DOM
+        document.body.appendChild(notification);
+
+        // Animate in
+        setTimeout(() => {
+          notification.classList.add("show");
+        }, 10);
+
+        // Auto hide after 3 seconds
+        setTimeout(() => {
+          hideNotification();
+        }, 3000);
+      }
+
+      // Hide notification
+      function hideNotification() {
+        const notification = document.querySelector(".notification");
+        if (notification) {
+          notification.classList.remove("show");
+          setTimeout(() => {
+            if (notification.parentNode) {
+              notification.parentNode.removeChild(notification);
+            }
+          }, 300);
+        }
+      }
+
+      // Validate email
+      function validateEmail(email) {
+        const re =
+          /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+        return re.test(String(email).toLowerCase());
+      }
+
+      // DATA WILAYAH
+      const wilayah = {
+        "Jawa Timur": {
+          "Kabupaten Kediri": {
+            "Kecamatan Plosoklaten": [
+              "Desa Brenggolo",
+              "Desa Donganti",
+              "Desa Gondang",
+              "Desa Jarak",
+              "Desa Kawedusan",
+              "Desa Kayunan",
+              "Desa Klanderan",
+              "Desa Panjer",
+              "Desa Plosokidul",
+              "Desa Plosolor",
+              "Desa Pranggang",
+              "Desa Punjul",
+              "Desa Sepawon",
+              "Desa Sumberagung",
+              "Desa Wonorejo",
+              "Desa Trisulo",
+            ],
+            "Kecamatan Ngancar": [
+              "Desa Ngancar",
+              "Desa Sugihwaras",
+              "Desa Sempu",
+              "Desa Bedali",
+              "Desa Babadan",
+              "Desa Tirto",
+              "Desa Pandansari",
+              "Desa Manggis",
+              "Desa Jambu",
+              "Desa Karangrejo",
+              "Desa Gadungan",
+              "Desa Puhsarang",
+            ],
+            "Kecamatan Pare": [
+              "Desa Pare",
+              "Desa Bendo",
+              "Desa Tulungrejo",
+              "Desa Tegowangi",
+              "Desa Gedangsewu",
+              "Desa Puhrejo",
+              "Desa Tertek",
+              "Desa Banjaran",
+              "Desa Sumberbendo",
+              "Desa Bringin",
+              "Desa Kunjang",
+              "Desa Tugurejo",
+            ],
+
+            "Kecamatan Wates": [
+              "Desa Duwet",
+              "Desa Gadungan",
+              "Desa Jajar",
+              "Desa Janti",
+              "Desa Joho",
+              "Desa Karanganyar",
+              "Desa Pagu",
+              "Desa Plaosan",
+              "Desa Pojok",
+              "Desa Segaran",
+              "Desa Sidomulyo",
+              "Desa Silir",
+              "Desa Sumberagung",
+              "Desa Tawang",
+              "Desa Tempurejo",
+              "Desa Tunge",
+              "Desa Wates",
+              "Desa Wonorejo",
+            ],
+
+            "Kecamatan Gurah": [
+              "Desa Gurah",
+              "Desa Adan-Adan",
+              "Desa Purwotengah",
+              "Desa Bangsongan",
+              "Desa Mojoayu",
+              "Desa Gempolan",
+              "Desa Kunjang",
+              "Desa Tiru Lor",
+              "Desa Turus",
+              "Desa Gempolan",
+              "Desa Sumbercangkring",
+              "Desa Sumberejo",
+              "Desa Sidomulyo",
+            ],
+            "Kecamatan Ngadiluwih": [
+              "Desa Ngadiluwih",
+              "Desa Badal Pandean",
+              "Desa Purwokerto",
+              "Desa Bedali",
+              "Desa Mangunrejo",
+              "Desa Purwokerto",
+              "Desa Wonorejo",
+              "Desa Candirejo",
+              "Desa Karangrejo",
+              "Desa Banjaranyar",
+              "Desa Wonojoyo",
+              "Desa Gambyok",
+              "Desa Ngletih",
+            ],
+            "Kecamatan Kandangan": [
+              "Banaran",
+              "Bukur",
+              "Jerukwangi",
+              "Jerukgulung",
+              "Jlumbang",
+              "Kandangan",
+              "Karangtengah",
+              "Kasreman",
+              "Kemiri",
+              "Klampisan",
+              "Medowo",
+              "Mlancu",
+            ],
+            "Kecamatan Pagu": [
+              "Bendo",
+              "Bulupasar",
+              "Jagung",
+              "Kambingan",
+              "Menang",
+              "Pagu",
+              "Semanding",
+              "Semen",
+              "Sitimerto",
+              "Tanjung",
+              "Tengger Kidul",
+              "Wates",
+              "Wonosari",
+            ],
+            "Kecamatan Gampengrejo": [
+              "Desa Gampeng",
+              "Desa Rejo",
+              "Desa Doko",
+              "Desa Kedungrejo",
+              "Desa Ringinrejo",
+              "Desa Jatisari",
+              "Desa Banjaran",
+              "Desa Mulyorejo",
+              "Gampengrejo",
+              "Jongbiru",
+              "Kalibelo",
+              "Kepuhrejo",
+              "Ngebrak",
+              "Plosorejo",
+              "Putih",
+              "Sambirejo",
+              "Sambiresik",
+              "Turus",
+              "Wanengpaten",
+            ],
+            "Kecamatan Papar": [
+              "Desa Papar",
+              "Desa Sidomulyo",
+              "Desa Tugurejo",
+              "Desa Ketapanrame",
+              "Desa Kertowono",
+              "Desa Kedungrejo",
+              "Desa Bangsri",
+              "Dawuhan Kidul",
+              "Jambangan",
+              "Janti",
+              "Kedungmalang",
+              "Kepuh",
+              "Kwaron",
+              "Maduretno",
+              "Minggiran",
+              "Ngampel",
+              "Papar",
+              "Pehkulon",
+              "Pehwetan",
+              "Puhjajar",
+              "Purwotengah",
+              "Srikaton",
+              "Sukomoro",
+              "Tanon",
+            ],
+            "Kecamatan Mojo": [
+              "Blimbing",
+              "Jugo",
+              "Kedawung",
+              "Keniten",
+              "Kranding",
+              "Kraton",
+              "Maesan",
+              "Mlati",
+              "Mojo",
+              "Mondo",
+              "Ngadi",
+              "Ngetrep",
+              "Pamongan",
+              "Petok",
+              "Petungroto",
+              "Ploso",
+              "Ponggok",
+              "Surat",
+              "Sukoanyar",
+              "Tambibendo",
+            ],
+            "Kecamatan Semen": [
+              "Bobang",
+              "Bulu",
+              "Joho",
+              "Kanyoran",
+              "Kedak",
+              "Pagung",
+              "Puhrubuh",
+              "Puhsarang",
+              "Selopanggung",
+              "Semen",
+              "Sidomulyo",
+              "Titik",
+            ],
+            "Kecamatan Ringinrejo": [
+              "Batuaji",
+              "Dawung",
+              "Deyeng",
+              "Jemekan",
+              "Nambakan",
+              "Purwodadi",
+              "Ringinrejo",
+              "Sambi",
+              "Selodono",
+              "Srikaton",
+              "Susuhbango",
+            ],
+            "Kecamatan Plemahan": [
+              {
+                "Kecamatan Plemahan": [
+                  "Banjarejo",
+                  "Bogokidul",
+                  "Kayenlor",
+                  "Langenharjo",
+                  "Mejono",
+                  "Mojoayu",
+                  "Mojokerep",
+                  "Ngino",
+                  "Payaman",
+                  "Plemahan",
+                  "Puhjarak",
+                  "Ringinpitu",
+                  "Sebet",
+                  "Sidowarek",
+                  "Sukoharjo",
+                  "Tegowangi",
+                  "Wonokerto",
+                ],
+              },
+            ],
+            "Kecamatan Kunjang": [
+              "Desa Kunjang",
+              "Desa Wonorejo",
+              "Desa Tiru",
+              "Desa Pelem",
+              "Desa Sukorejo",
+              "Balungjeruk",
+              "Dungus",
+              "Juwet",
+              "Kapas",
+              "Kapi",
+              "Klepek",
+              "Kunjang",
+              "Kuwik",
+              "Pakis",
+              "Pare Lor",
+              "Tengger Lor",
+              "Wonorejo",
+            ],
+            "Kecamatan Banyakan": [
+              "Desa Banyakan",
+              "Desa Sendang",
+              "Desa Paron",
+              "Desa Kedungrejo",
+              "Desa Gemblegan",
+              "Banyakan",
+              "Jabon",
+              "Jatirejo",
+              "Manyaran",
+              "Maron",
+              "Ngablak",
+              "Parang",
+              "Sendang",
+              "Tiron",
+            ],
+            "Kecamatan Tarokan": [
+              "Desa Tarokan",
+              "Desa Blabak",
+              "Desa Kedak",
+              "Desa Pandanrejo",
+              "Desa Jatirejo",
+              "Blimbing",
+              "Bulusari",
+              "Cengkok",
+              "Jati",
+              "Kaliboto",
+              "Kalirong",
+              "Kedungsari",
+              "Kerep",
+              "Sumberduren",
+              "Tarokan",
+            ],
+            "Kecamatan Kras": [
+              "Banjaranyar",
+              "Bendosari",
+              "Bleber",
+              "Butuh",
+              "Jabang",
+              "Jambean",
+              "Krandang",
+              "Kanigoro",
+              "Karangtalun",
+              "Kras",
+              "Mojosari",
+              "Nyawangan",
+              "Pelas",
+              "Purwodadi",
+              "Rejomulyo",
+              "Setonorejo",
+            ],
+            "Kecamatan Kayen Kidul": [
+              "Bangsongan",
+              "Baye",
+              "Jambu",
+              "Kayen Kidul",
+              "Mukuh",
+              "Nanggungan",
+              "Padangan",
+              "Sambirobyong",
+              "Sekaran",
+              "Semambung",
+              "Senden",
+              "Sukoharjo",
+            ],
+            "Kecamatan Kandat": [
+              "Blabak",
+              "Cendono",
+              "Kandat",
+              "Karangrejo",
+              "Ngletih",
+              "Ngreco",
+              "Pule",
+              "Purworejo",
+              "Ringinsari",
+              "Selosari",
+              "Sumberejo",
+              "Tegalan",
+            ],
+          },
+          "Kabupaten Malang": {
+            "Kecamatan Lawang": [
+              "Desa Sidodadi",
+              "Desa Sumberporong",
+              "Desa Turirejo",
+            ],
+            "Kecamatan Kepanjen": [
+              "Desa Talangagung",
+              "Desa Kedungpedaringan",
+              "Desa Panggungrejo",
+            ],
+          },
+          "Kabupaten Blitar": {
+            "Kecamatan Kanigoro": [
+              "Desa Jatinom",
+              "Desa Plosorejo",
+              "Desa Gaprang",
+            ],
+            "Kecamatan Srengat": [
+              "Desa Dandong",
+              "Desa Kauman",
+              "Desa Kuningan",
+            ],
+          },
+          "Kota Kediri": {
+            "Kecamatan Mojoroto": [
+              "Bandar Kidul",
+              "Bandar Lor",
+              "Banjarmlati",
+              "Bujel",
+              "Campurejo",
+              "Dermo",
+              "Gayam",
+              "Lirboyo",
+              "Mojoroto",
+              "Mrican",
+              "Ngampel",
+              "Pojok",
+              "Sukorame",
+              "Tamanan",
+            ],
+            "Kecamatan Kota": [
+              "Balowerti",
+              "Banjaran",
+              "Dandangan",
+              "Jagalan",
+              "Kaliombo",
+              "Kampungdalem",
+              "Kemasan",
+              "Manisrenggo",
+              "Ngadirejo",
+              "Ngronggo",
+              "Pakelan",
+              "Pocanan",
+              "Rejomulyo",
+              "Ringinanom",
+              "Semampir",
+              "Setonogedong",
+              "Setonopande",
+            ],
+            "Kecamatan Pesantren": [
+              "Banaran",
+              "Bangsal",
+              "Betet",
+              "Bawang",
+              "Blabak",
+              "Burengan",
+              "Jamsaren",
+              "Ketami",
+              "Ngletih",
+              "Pakunden",
+              "Pesantren",
+              "Singonegaran",
+              "Tempurejo",
+              "Tinalan",
+              "Tosaren",
+            ],
+          },
+          "Kabupaten Tulungagung": {
+            "Kecamatan Tulungagung": [
+              "Bago",
+              "Botoran",
+              "Jepun",
+              "Kampungdalem",
+              "Karangwaru",
+              "Kauman",
+              "Kedungsoko",
+              "Kenayan",
+              "Kepatihan",
+              "Kutoanyar",
+              "Panggungrejo",
+              "Sembung",
+              "Tamanan",
+              "Tertek",
+            ],
+            "Kecamatan Boyolangu": [
+              "Beji",
+              "Bono",
+              "Boyolangu",
+              "Gedangsewu",
+              "Karangrejo",
+              "Kendalbulur",
+              "Kepuh",
+              "Moyoketen",
+              "Ngranti",
+              "Pucungkidul",
+              "Sanggrahan",
+              "Serut",
+              "Sobontoro",
+              "Tanjungsari",
+              "Wajak Kidul",
+              "Wajak Lor",
+              "Waung",
+            ],
+            "Kecamatan Kedungwaru": [
+              "Bangoan",
+              "Boro",
+              "Bulusari",
+              "Gendingan",
+              "Kedungwaru",
+              "Ketanon",
+              "Loderesan",
+              "Majan",
+              "Mangunsari",
+              "Ngujang",
+              "Plandaan",
+              "Plosokandang",
+              "Rejoagung",
+              "Ringinpitu",
+              "Simo",
+              "Tapan",
+              "Tawangsari",
+              "Tunggulsari",
+              "Winong",
+            ],
+            "Kecamatan Ngantru": [
+              "Banjarsari",
+              "Batokan",
+              "Bendosari",
+              "Kepuhrejo",
+              "Mojoagung",
+              "Ngantru",
+              "Padangan",
+              "Pakel",
+              "Pinggirsari",
+              "Pojok",
+              "Pucunglor",
+              "Pulerejo",
+              "Srikaton",
+            ],
+            "Kecamatan Kauman": [
+              "Balerejo",
+              "Banaran",
+              "Batangsaren",
+              "Bolorejo",
+              "Jatimulyo",
+              "Kalangbret",
+              "Karanganom",
+              "Kates",
+              "Kauman",
+              "Mojosari",
+              "Panggungrejo",
+              "Pucangan",
+              "Sidorejo",
+            ],
+            "Kecamatan Pagerwojo": [
+              "Gambiran",
+              "Gondanggunung",
+              "Kedungcangkring",
+              "Kradinan",
+              "Mulyosari",
+              "Pagerwojo",
+              "Penjore",
+              "Samar",
+              "Segawe",
+              "Sidomulyo",
+              "Wonorejo",
+            ],
+            "Kecamatan Sendang": [
+              "Dono",
+              "Geger",
+              "Kedoyo",
+              "Krosok",
+              "Nglurup",
+              "Nglutung",
+              "Nyawangan",
+              "Picisan",
+              "Sendang",
+              "Talang",
+              "Tugu",
+            ],
+            "Kecamatan Karangrejo": [
+              "Babadan",
+              "Bungur",
+              "Gedangan",
+              "Jeli",
+              "Karangrejo",
+              "Punjul",
+              "Sembon",
+              "Sukodono",
+              "Sukorejo",
+              "Sukowidodo",
+              "Sukowiyono",
+              "Tanjungsari",
+              "Tulungrejo",
+            ],
+            "Kecamatan Gondang": [
+              "Bendo",
+              "Bendungan",
+              "Blendis",
+              "Dukuh",
+              "Gondang",
+              "Gondosuli",
+              "Jarakan",
+              "Kendal",
+              "Kiping",
+              "Macanbang",
+              "Mojoarum",
+              "Ngrendeng",
+              "Notorejo",
+              "Rejosari",
+              "Sepatan",
+              "Sidem",
+              "Sidomulyo",
+              "Tawing",
+              "Tiudan",
+              "Wonokromo",
+            ],
+            "Kecamatan Sumbergempol": [
+              "Bendiljati Kulon",
+              "Bendiljati Wetan",
+              "Bendilwungu",
+              "Bukur",
+              "Doroampel",
+              "Jabalsari",
+              "Junjung",
+              "Mirigambar",
+              "Podorejo",
+              "Sambidoplang",
+              "Sambijajar",
+              "Sambirobyong",
+              "Sumberdadi",
+              "Tambakrejo",
+              "Trenceng",
+              "Wates",
+              "Wonorejo",
+            ],
+            "Kecamatan Ngunut": [
+              "Balesono",
+              "Gilang",
+              "Kacangan",
+              "Kalangan",
+              "Kaliwungu",
+              "Karangsono",
+              "Kromasan",
+              "Ngunut",
+              "Pandansari",
+              "Pulosari",
+              "Pulotondo",
+              "Purworejo",
+              "Samir",
+              "Selorejo",
+              "Sumberejo Kulon",
+              "Sumberejo Wetan",
+              "Sumberingin Kidul",
+              "Sumberingin Kulon",
+            ],
+            "Kecamatan Pucanglaban": [
+              "Demuk",
+              "Kalidawe",
+              "Kaligentong",
+              "Manding",
+              "Panggungkalak",
+              "Panggunguni",
+              "Pucanglaban",
+              "Sumberbendo",
+              "Sumberdadap",
+            ],
+            "Kecamatan Rejotangan": [
+              "Ariyojeding",
+              "Banjarejo",
+              "Blimbing",
+              "Buntaran",
+              "Jatidowo",
+              "Karangsari",
+              "Pakisrejo",
+              "Panjerejo",
+              "Rejotangan",
+              "Sukorejo Wetan",
+              "Sumberagung",
+              "Tanen",
+              "Tegalrejo",
+              "Tenggong",
+              "Tenggur",
+              "Tugu",
+            ],
+            "Kecamatan Kalidawir": [
+              "Banyu Urip",
+              "Betak",
+              "Domasan",
+              "Jabon",
+              "Joho",
+              "Kalibatur",
+              "Kalidawir",
+              "Karangtalun",
+              "Ngubalan",
+              "Pagersari",
+              "Pakisaji",
+              "Rejosari",
+              "Salakkembang",
+              "Sukorejo Kulon",
+              "Tanjung",
+              "Tunggangri",
+              "Winong",
+            ],
+            "Kecamatan Besuki": [
+              "Besole",
+              "Besuki",
+              "Keboireng",
+              "Sedayugunung",
+              "Siyotobagus",
+              "Tanggulkundung",
+              "Tanggulturus",
+              "Tanggulwelahan",
+              "Tulungrejo",
+              "Wates Kroyo",
+            ],
+            "Kecamatan Campurdarat": [
+              "Campurdarat",
+              "Gamping",
+              "Gedangan",
+              "Ngentrong",
+              "Pelem",
+              "Pojok",
+              "Sawo",
+              "Tanggung",
+              "Wates",
+            ],
+            "Kecamatan Bandung": [
+              "Bandung",
+              "Bantengan",
+              "Bulus",
+              "Gandong",
+              "Kedungwilut",
+              "Kesambi",
+              "Mergayu",
+              "Ngepeh",
+              "Nglampir",
+              "Ngunggahan",
+              "Sebalor",
+              "Singgit",
+              "Soko",
+              "Sukoharjo",
+              "Suruhan Kidul",
+              "Suruhan Lor",
+              "Suwaru",
+              "Talun Kulon",
+            ],
+            "Kecamatan Pakel": [
+              "Bangunjaya",
+              "Bangunmulyo",
+              "Bono",
+              "Duwet",
+              "Gebang",
+              "Gempolan",
+              "Gesikan",
+              "Gombang",
+              "Kesreman",
+              "Ngebong",
+              "Ngrance",
+              "Pakel",
+              "Pecuk",
+              "Sambitan",
+              "Sanan",
+              "Sodo",
+              "Sukoanyar",
+              "Suwaluh",
+              "Tamban",
+            ],
+            "Kecamatan Tanggung Gunung": [
+              "Jenglungharjo",
+              "Kresikan",
+              "Ngepoh",
+              "Ngrejo",
+              "Pakisrejo",
+              "Tanggung Gunung",
+              "Tenggarejo",
+            ],
+          },
+          "Kabupaten Jombang": {
+            "Kecamatan Diwek": ["Desa Cukir", "Desa Gondek", "Desa Jatipelem"],
+            "Kecamatan Mojowarno": [
+              "Desa Mojojejer",
+              "Desa Japanan",
+              "Desa Selorejo",
+            ],
+          },
+          "Kabupaten Nganjuk": {
+            "Kecamatan Bagor": {
+              Desa: [
+                "Bagor Kulon",
+                "Balongrejo",
+                "Banaran Kulon",
+                "Banaran Wetan",
+                "Buduran",
+                "Gandu",
+                "Gemenggeng",
+                "Girirejo",
+                "Karang Tengah",
+                "Kendalrejo",
+                "Kerep Kidul",
+                "Kutorejo",
+                "Ngumpul",
+                "Paron",
+                "Pesudukuh",
+                "Petak",
+                "Sekarputih",
+                "Selorejo",
+                "Sugihwaras",
+              ],
+              Kelurahan: ["Guyangan", "Kedondong"],
+            },
+            "Kecamatan Baron": [
+              "Baron",
+              "Garu",
+              "Gebangkerep",
+              "Jambi",
+              "Jekek",
+              "Katerban",
+              "Kemaduh",
+              "Kemlokolegi",
+              "Mabung",
+              "Sambiroto",
+              "Waung",
+            ],
+            "Kecamatan Berbek": [
+              "Balongrejo",
+              "Bendungrejo",
+              "Berbek",
+              "Bulu",
+              "Cepoko",
+              "Grojogan",
+              "Kacangan",
+              "Maguan",
+              "Mlilir",
+              "Ngrawan",
+              "Patranrejo",
+              "Salamrojo",
+              "Semare",
+              "Sendangbumen",
+              "Sengkut",
+              "Sonopatik",
+              "Sumberurip",
+              "Sumberwindu",
+              "Tiripan",
+            ],
+            "Kecamatan Gondang": [
+              "Balonggebang",
+              "Campur",
+              "Gondangkulon",
+              "Jaan",
+              "Karangsemi",
+              "Kedungglugu",
+              "Ketawang",
+              "Losari",
+              "Mojoseto",
+              "Nglinggo",
+              "Ngunjung",
+              "Pandean",
+              "Sanggrahan",
+              "Senggowar",
+              "Senjayan",
+              "Sumberagung",
+              "Sumberjo",
+            ],
+            "Kecamatan Jatikalen": [
+              "Begendeng",
+              "Dawuhan",
+              "Dlururejo",
+              "Gondang Wetan",
+              "Jatikalen",
+              "Lumpangkuwik",
+              "Munung",
+              "Ngasem",
+              "Perning",
+              "Pule",
+              "Pulowetan",
+            ],
+            "Kecamatan Kertosono": {
+              Desa: [
+                "Bangsri",
+                "Drenges",
+                "Juwono",
+                "Kalianyar",
+                "Kepuh",
+                "Kudu",
+                "Kutorejo",
+                "Lambangkuning",
+                "Nglawak",
+                "Pandantoyo",
+                "Pelem",
+                "Tanjung",
+                "Tembarak",
+              ],
+              Kelurahan: ["Banaran"],
+            },
+            "Kecamatan Lengkong": [
+              "Balongasem",
+              "Bangle",
+              "Banjardowo",
+              "Jatipunggur",
+              "Jegreg",
+              "Kedungmlaten",
+              "Ketandan",
+              "Lengkong",
+              "Ngepung",
+              "Ngringin",
+              "Pinggir",
+              "Prayungan",
+              "Sawahan",
+              "Sumberkepuh",
+              "Sumbermiri",
+              "Sumbersono",
+            ],
+            "Kecamatan Loceret": [
+              "Bajulan",
+              "Candirejo",
+              "Gejagan",
+              "Genjeng",
+              "Godean",
+              "Jatirejo",
+              "Karangsono",
+              "Kenep",
+              "Kwagean",
+              "Loceret",
+              "Macanan",
+              "Mungkung",
+              "Ngepeh",
+              "Nglaban",
+              "Patihan",
+              "Putukrejo",
+              "Sekaran",
+              "Sombron",
+              "Sukorejo",
+              "Tanjungrejo",
+              "Teken Glagahan",
+              "Tempel Wetan",
+            ],
+            "Kecamatan Nganjuk": {
+              Desa: ["Balongpacul", "Kedungdowo"],
+              Kelurahan: [
+                "Begadung",
+                "Bogo",
+                "Cangkringan",
+                "Ganungkidul",
+                "Jatirejo",
+                "Kartoharjo",
+                "Kauman",
+                "Kramat",
+                "Mangundikaran",
+                "Payaman",
+                "Ploso",
+                "Ringinanom",
+                "Werungotok",
+              ],
+            },
+            "Kecamatan Ngetos": [
+              "Blongko",
+              "Kepel",
+              "Klodan",
+              "Kuncir",
+              "Kweden",
+              "Mojoduwur",
+              "Ngetos",
+              "Oro-oro Ombo",
+              "Suru",
+            ],
+            "Kecamatan Ngluyu": [
+              "Bajang",
+              "Gampeng",
+              "Lengkong Lor",
+              "Ngluyu",
+              "Sugihwaras",
+              "Tempuran",
+            ],
+            "Kecamatan Ngronggot": [
+              "Banjarsari",
+              "Betet",
+              "Cengkok",
+              "Dadapan",
+              "Juwet",
+              "Kalianyar",
+              "Kaloran",
+              "Kelutan",
+              "Klurahan",
+              "Mojokendil",
+              "Ngronggot",
+              "Tanjungkalang",
+              "Trayang",
+            ],
+            "Kecamatan Pace": [
+              "Babadan",
+              "Banaran",
+              "Batembat",
+              "Bodor",
+              "Cerme",
+              "Gemenggeng",
+              "Gondang",
+              "Jampes",
+              "Jatigreges",
+              "Jetis",
+              "Joho",
+              "Kecubung",
+              "Kepanjen",
+              "Mlandangan",
+              "Pace Wetan",
+              "Pacekulon",
+              "Plosoharjo",
+              "Sanan",
+            ],
+            "Kecamatan Patianrowo": [
+              "Babadan",
+              "Bukur",
+              "Lestari",
+              "Ngepung",
+              "Ngrombot",
+              "Pakuncen",
+              "Patianrowo",
+              "Pecuk",
+              "Pisang",
+              "Rowomarto",
+              "Tirtobinangun",
+            ],
+            "Kecamatan Prambon": [
+              "Baleturi",
+              "Bandung",
+              "Gondanglegi",
+              "Kurungrejo",
+              "Mojoagung",
+              "Nglawak",
+              "Rowoharjo",
+              "Sanggrahan",
+              "Singkalanyar",
+              "Sono Ageng",
+              "Sugihwaras",
+              "Tanjungtani",
+              "Tegaron",
+              "Watudandang",
+            ],
+            "Kecamatan Rejoso": [
+              "Banjarejo",
+              "Bendoasri",
+              "Gempol",
+              "Jatirejo",
+              "Jintel",
+              "Kedungpadang",
+              "Klagen",
+              "Mlorah",
+              "Mojorembun",
+              "Mungkung",
+              "Musir Kidul",
+              "Musir Lor",
+              "Ngadiboyo",
+              "Ngangkatan",
+              "Puhkerep",
+              "Rejoso",
+              "Sambikerep",
+              "Setren",
+              "Sidokare",
+              "Sukorejo",
+              "Talang",
+              "Talun",
+              "Tritik",
+              "Wengkal",
+            ],
+            "Kecamatan Sawahan": [
+              "Bareng",
+              "Bendolo",
+              "Duren",
+              "Kebonagung",
+              "Margopatut",
+              "Ngliman",
+              "Sawahan",
+              "Sidorejo",
+              "Siwalan",
+            ],
+            "Kecamatan Sukomoro": {
+              Desa: [
+                "Bagor Wetan",
+                "Blitaran",
+                "Bungur",
+                "Kedungsoko",
+                "Nglundo",
+                "Ngrami",
+                "Ngrengket",
+                "Pehserut",
+                "Putren",
+                "Sumengko",
+              ],
+              Kelurahan: ["Kapas", "Sukomoro"],
+            },
+            "Kecamatan Tanjunganom": {
+              Desa: [
+                "Kedungombo",
+                "Sumberkepuh",
+                "Kampungbaru",
+                "Wates",
+                "Malangsari",
+                "Getas",
+                "Sonobekel",
+                "Ngadirejo",
+                "Banjaranyar",
+                "Sidoharjo",
+                "Jogomerto",
+                "Kedungrejo",
+                "Sambirejo",
+                "Demangan",
+              ],
+              Kelurahan: ["Tanjunganom", "Warujayeng"],
+            },
+            "Kecamatan Wilangan": [
+              "Mancon",
+              "Ngadipiro",
+              "Ngudikan",
+              "Sudimoroharjo",
+              "Sukoharjo",
+              "Wilangan",
+            ],
+          },
+          "Kabupaten Mojokerto": {
+            "Kecamatan Dlanggu": [
+              "Desa Randugenengan",
+              "Desa Sumberkarang",
+              "Desa Pohkecik",
+            ],
+            "Kecamatan Pacet": [
+              "Desa Cempokolimo",
+              "Desa Sajen",
+              "Desa Claket",
+            ],
+          },
+          "Kabupaten Sidoarjo": {
+            "Kecamatan Tanggulangin": [
+              "Desa Ketegan",
+              "Desa Kedensari",
+              "Desa Kludan",
+            ],
+            "Kecamatan Candi": ["Desa Gelam", "Desa Sugihwaras", "Desa Candi"],
+          },
+          "Kabupaten Pasuruan": {
+            "Kecamatan Pandaan": [
+              "Desa Petungasri",
+              "Desa Durensewu",
+              "Desa Sumbergedang",
+            ],
+            "Kecamatan Grati": [
+              "Desa Ranu Klindungan",
+              "Desa Kalipang",
+              "Desa Plososari",
+            ],
+          },
+          "Kabupaten Probolinggo": {
+            "Kecamatan Leces": [
+              "Desa Tigasan Wetan",
+              "Desa Sumberkedawung",
+              "Desa Warujinggo",
+            ],
+            "Kecamatan Sukapura": [
+              "Desa Ngadisari",
+              "Desa Wonokerto",
+              "Desa Jetak",
+            ],
+          },
+          "Kabupaten Banyuwangi": {
+            "Kecamatan Rogojampi": [
+              "Desa Gitik",
+              "Desa Bubuk",
+              "Desa Lemahbang Dewo",
+            ],
+            "Kecamatan Genteng": [
+              "Desa Genteng Kulon",
+              "Desa Genteng Wetan",
+              "Desa Setail",
+            ],
+          },
+          "Kabupaten Lamongan": {
+            "Kecamatan Babat": [
+              "Desa Kebalan Kulon",
+              "Desa Moropelang",
+              "Desa Plaosan",
+            ],
+            "Kecamatan Paciran": [
+              "Desa Kranji",
+              "Desa Weru",
+              "Desa Banjarwati",
+            ],
+          },
+        },
+        "Jawa Tengah": {},
+        "Jawa Barat": {},
+        "DKI Jakarta": {},
+        Banten: {},
+        "Daerah Istimewa Yogyakarta": {},
+        Bali: {},
+        "Nusa Tenggara Barat": {},
+        "Nusa Tenggara Timur": {},
+        "Kalimantan Timur": {},
+        "Kalimantan Selatan": {},
+        "Kalimantan Tengah": {},
+        "Kalimantan Barat": {},
+        "Kalimantan Utara": {},
+        "Sulawesi Selatan": {},
+        "Sulawesi Utara": {},
+        "Sulawesi Tengah": {},
+        "Sulawesi Tenggara": {},
+        Gorontalo: {},
+        "Sulawesi Barat": {},
+        Maluku: {},
+        "Maluku Utara": {},
+        Papua: {},
+        "Papua Barat": {},
+        "Papua Tengah": {},
+        "Papua Pegunungan": {},
+        "Papua Selatan": {},
+        "Papua Barat Daya": {},
+        Aceh: {},
+        "Sumatera Utara": {},
+        "Sumatera Barat": {},
+        Riau: {},
+        "Kepulauan Riau": {},
+        Jambi: {},
+        Bengkulu: {},
+        "Sumatera Selatan": {},
+        "Kepulauan Bangka Belitung": {},
+        Lampung: {},
+      };
+
+      // Populate provinces
+      function populateProv() {
+        const provSelect = document.getElementById("provinsi");
+        provSelect.innerHTML = "<option value=''>-- Pilih Provinsi --</option>";
+
+        Object.keys(wilayah).forEach((prov) => {
+          provSelect.innerHTML += `<option value="${prov}">${prov}</option>`;
+        });
+      }
+
+      // Populate kabupaten based on selected province
+      function populateKab() {
+        const prov = document.getElementById("provinsi").value;
+        const kabSelect = document.getElementById("kabupaten");
+        const kecSelect = document.getElementById("kecamatan");
+        const desaSelect = document.getElementById("desa");
+
+        kabSelect.innerHTML =
+          "<option value=''>-- Pilih Kabupaten/Kota --</option>";
+        kecSelect.innerHTML = "<option value=''>-- Pilih Kecamatan --</option>";
+        desaSelect.innerHTML = "<option value=''>-- Pilih Desa --</option>";
+
+        if (prov && wilayah[prov]) {
+          Object.keys(wilayah[prov]).forEach((kab) => {
+            kabSelect.innerHTML += `<option value="${kab}">${kab}</option>`;
+          });
+        }
+      }
+
+      // Populate kecamatan based on selected kabupaten
+      function populateKec() {
+        const prov = document.getElementById("provinsi").value;
+        const kab = document.getElementById("kabupaten").value;
+        const kecSelect = document.getElementById("kecamatan");
+        const desaSelect = document.getElementById("desa");
+
+        kecSelect.innerHTML = "<option value=''>-- Pilih Kecamatan --</option>";
+        desaSelect.innerHTML = "<option value=''>-- Pilih Desa --</option>";
+
+        if (prov && kab && wilayah[prov][kab]) {
+          Object.keys(wilayah[prov][kab]).forEach((kec) => {
+            kecSelect.innerHTML += `<option value="${kec}">${kec}</option>`;
+          });
+        }
+      }
+
+      // Populate desa based on selected kecamatan
+      function populateDesa() {
+        const prov = document.getElementById("provinsi").value;
+        const kab = document.getElementById("kabupaten").value;
+        const kec = document.getElementById("kecamatan").value;
+        const desaSelect = document.getElementById("desa");
+
+        desaSelect.innerHTML = "<option value=''>-- Pilih Desa --</option>";
+
+        if (prov && kab && kec && wilayah[prov][kab][kec]) {
+          wilayah[prov][kab][kec].forEach((desa) => {
+            desaSelect.innerHTML += `<option value="${desa}">${desa}</option>`;
+          });
+        }
+      }
+
+      // Populate certificate kabupaten
+      function populateCertKab() {
+        const kabSelect = document.getElementById("cert_kabupaten");
+        kabSelect.innerHTML =
+          "<option value=''>-- Pilih Kabupaten/Kota --</option>";
+
+        // Get all kabupaten from all provinces
+        const allKabupaten = new Set();
+        Object.values(wilayah).forEach((province) => {
+          Object.keys(province).forEach((kab) => {
+            allKabupaten.add(kab);
+          });
+        });
+
+        // Sort and add to select
+        Array.from(allKabupaten)
+          .sort()
+          .forEach((kab) => {
+            kabSelect.innerHTML += `<option value="${kab}">${kab}</option>`;
+          });
+      }
+
+      // Populate certificate kecamatan based on selected kabupaten
+      function populateCertKec() {
+        const kab = document.getElementById("cert_kabupaten").value;
+        const kecSelect = document.getElementById("cert_kecamatan");
+        const desaSelect = document.getElementById("cert_desa");
+
+        kecSelect.innerHTML = "<option value=''>-- Pilih Kecamatan --</option>";
+        desaSelect.innerHTML = "<option value=''>-- Pilih Desa --</option>";
+
+        if (kab) {
+          // Find the province that contains this kabupaten
+          let foundKecamatan = null;
+          for (const prov in wilayah) {
+            if (wilayah[prov][kab]) {
+              foundKecamatan = wilayah[prov][kab];
+              break;
+            }
+          }
+
+          if (foundKecamatan) {
+            Object.keys(foundKecamatan).forEach((kec) => {
+              kecSelect.innerHTML += `<option value="${kec}">${kec}</option>`;
+            });
+          }
+        }
+      }
+
+      // Populate certificate desa based on selected kecamatan
+      function populateCertDesa() {
+        const kab = document.getElementById("cert_kabupaten").value;
+        const kec = document.getElementById("cert_kecamatan").value;
+        const desaSelect = document.getElementById("cert_desa");
+
+        desaSelect.innerHTML = "<option value=''>-- Pilih Desa --</option>";
+
+        if (kab && kec) {
+          // Find the province that contains this kabupaten
+          let foundKecamatan = null;
+          for (const prov in wilayah) {
+            if (wilayah[prov][kab]) {
+              foundKecamatan = wilayah[prov][kab];
+              break;
+            }
+          }
+
+          if (foundKecamatan && foundKecamatan[kec]) {
+            foundKecamatan[kec].forEach((desa) => {
+              desaSelect.innerHTML += `<option value="${desa}">${desa}</option>`;
+            });
+          }
+        }
+      }
     </script>
   </body>
 </html>
